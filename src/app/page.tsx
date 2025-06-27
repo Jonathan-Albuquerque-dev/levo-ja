@@ -74,14 +74,14 @@ export default function Dashboard() {
                 className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
               >
                 <Home className="h-4 w-4" />
-                Dashboard
+                Painel
               </Link>
               <Link
                 href="#"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <ShoppingCart className="h-4 w-4" />
-                Orders
+                Pedidos
                 <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                   6
                 </Badge>
@@ -91,36 +91,35 @@ export default function Dashboard() {
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Package className="h-4 w-4" />
-                Products
+                Produtos
               </Link>
               <Link
                 href="#"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Users className="h-4 w-4" />
-                Customers
+                Clientes
               </Link>
               <Link
                 href="#"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <LineChart className="h-4 w-4" />
-                Analytics
+                Análises
               </Link>
             </nav>
           </div>
           <div className="mt-auto p-4">
             <Card>
               <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Upgrade to Pro</CardTitle>
+                <CardTitle>Atualizar para Pro</CardTitle>
                 <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
+                  Desbloqueie todos os recursos e tenha acesso ilimitado à nossa equipe de suporte.
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
                 <Button size="sm" className="w-full">
-                  Upgrade
+                  Atualizar
                 </Button>
               </CardContent>
             </Card>
@@ -137,7 +136,7 @@ export default function Dashboard() {
                 className="shrink-0 md:hidden"
               >
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
+                <span className="sr-only">Alternar menu de navegação</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
@@ -154,14 +153,14 @@ export default function Dashboard() {
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
-                  Dashboard
+                  Painel
                 </Link>
                 <Link
                   href="#"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  Orders
+                  Pedidos
                   <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                     6
                   </Badge>
@@ -171,35 +170,35 @@ export default function Dashboard() {
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <Package className="h-5 w-5" />
-                  Products
+                  Produtos
                 </Link>
                 <Link
                   href="#"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <Users className="h-5 w-5" />
-                  Customers
+                  Clientes
                 </Link>
                 <Link
                   href="#"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <LineChart className="h-5 w-5" />
-                  Analytics
+                  Análises
                 </Link>
               </nav>
               <div className="mt-auto">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Upgrade to Pro</CardTitle>
+                    <CardTitle>Atualizar para Pro</CardTitle>
                     <CardDescription>
-                      Unlock all features and get unlimited access to our
-                      support team.
+                      Desbloqueie todos os recursos e tenha acesso ilimitado à nossa
+                      equipe de suporte.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button size="sm" className="w-full">
-                      Upgrade
+                      Atualizar
                     </Button>
                   </CardContent>
                 </Card>
@@ -212,7 +211,7 @@ export default function Dashboard() {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search products..."
+                  placeholder="Buscar produtos..."
                   className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
                 />
               </div>
@@ -222,18 +221,18 @@ export default function Dashboard() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Bell className="h-5 w-5" />
-                <span className="sr-only">Toggle notifications</span>
+                <span className="sr-only">Alternar notificações</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuLabel>Smart Alerts</DropdownMenuLabel>
+              <DropdownMenuLabel>Alertas Inteligentes</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <div className="flex items-start gap-3">
                     <div className="text-destructive pt-1"><AlertTriangle className="size-4" /></div>
                     <div>
-                        <p className="font-medium">Low Stock Alert</p>
-                        <p className="text-xs text-muted-foreground">Product "Organic Bananas" is running low.</p>
+                        <p className="font-medium">Alerta de Estoque Baixo</p>
+                        <p className="text-xs text-muted-foreground">O produto "Bananas Orgânicas" está acabando.</p>
                     </div>
                 </div>
               </DropdownMenuItem>
@@ -241,8 +240,8 @@ export default function Dashboard() {
                 <div className="flex items-start gap-3">
                     <div className="text-yellow-500 pt-1"><ShoppingCart className="size-4" /></div>
                     <div>
-                        <p className="font-medium">3 Pending Orders</p>
-                        <p className="text-xs text-muted-foreground">Orders #1124, #1125, #1126 need processing.</p>
+                        <p className="font-medium">3 Pedidos Pendentes</p>
+                        <p className="text-xs text-muted-foreground">Os pedidos #1124, #1125, #1126 precisam ser processados.</p>
                     </div>
                 </div>
               </DropdownMenuItem>
@@ -252,16 +251,16 @@ export default function Dashboard() {
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
                 <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
+                <span className="sr-only">Alternar menu de usuário</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>Configurações</DropdownMenuItem>
+              <DropdownMenuItem>Suporte</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem>Sair</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
@@ -270,54 +269,54 @@ export default function Dashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Revenue
+                  Receita Total
                 </CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$45,231.89</div>
+                <div className="text-2xl font-bold">R$45.231,89</div>
                 <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
+                  +20,1% do último mês
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Subscriptions
+                  Assinaturas
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+2350</div>
                 <p className="text-xs text-muted-foreground">
-                  +180.1% from last month
+                  +180,1% do último mês
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                <CardTitle className="text-sm font-medium">Vendas</CardTitle>
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
+                <div className="text-2xl font-bold">+12.234</div>
                 <p className="text-xs text-muted-foreground">
-                  +19% from last month
+                  +19% do último mês
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Active Now
+                  Ativos Agora
                 </CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+573</div>
                 <p className="text-xs text-muted-foreground">
-                  +201 since last hour
+                  +201 desde a última hora
                 </p>
               </CardContent>
             </Card>
@@ -325,9 +324,9 @@ export default function Dashboard() {
           <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
             <Card className="xl:col-span-2">
               <CardHeader>
-                <CardTitle>Sales Trends</CardTitle>
+                <CardTitle>Tendências de Vendas</CardTitle>
                 <CardDescription>
-                  Showing sales for the last 6 months.
+                  Mostrando as vendas dos últimos 6 meses.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -336,9 +335,9 @@ export default function Dashboard() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Recent Sales</CardTitle>
+                <CardTitle>Vendas Recentes</CardTitle>
                 <CardDescription>
-                  You made 265 sales this month.
+                  Você fez 265 vendas este mês.
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-8">
@@ -355,7 +354,7 @@ export default function Dashboard() {
                       olivia.martin@email.com
                     </p>
                   </div>
-                  <div className="ml-auto font-medium">+$1,999.00</div>
+                  <div className="ml-auto font-medium">+R$1.999,00</div>
                 </div>
                 <div className="flex items-center gap-4">
                   <Avatar className="hidden h-9 w-9 sm:flex">
@@ -370,7 +369,7 @@ export default function Dashboard() {
                       jackson.lee@email.com
                     </p>
                   </div>
-                  <div className="ml-auto font-medium">+$39.00</div>
+                  <div className="ml-auto font-medium">+R$39,00</div>
                 </div>
                 <div className="flex items-center gap-4">
                   <Avatar className="hidden h-9 w-9 sm:flex">
@@ -385,7 +384,7 @@ export default function Dashboard() {
                       isabella.nguyen@email.com
                     </p>
                   </div>
-                  <div className="ml-auto font-medium">+$299.00</div>
+                  <div className="ml-auto font-medium">+R$299,00</div>
                 </div>
                 <div className="flex items-center gap-4">
                   <Avatar className="hidden h-9 w-9 sm:flex">
@@ -400,7 +399,7 @@ export default function Dashboard() {
                       will@email.com
                     </p>
                   </div>
-                  <div className="ml-auto font-medium">+$99.00</div>
+                  <div className="ml-auto font-medium">+R$99,00</div>
                 </div>
                 <div className="flex items-center gap-4">
                   <Avatar className="hidden h-9 w-9 sm:flex">
@@ -415,7 +414,7 @@ export default function Dashboard() {
                       sofia.davis@email.com
                     </p>
                   </div>
-                  <div className="ml-auto font-medium">+$39.00</div>
+                  <div className="ml-auto font-medium">+R$39,00</div>
                 </div>
               </CardContent>
             </Card>

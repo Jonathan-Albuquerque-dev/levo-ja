@@ -5,16 +5,16 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } f
 
 const chartData = [
   { month: "Jan", sales: 1860 },
-  { month: "Feb", sales: 3050 },
+  { month: "Fev", sales: 3050 },
   { month: "Mar", sales: 2370 },
-  { month: "Apr", sales: 730 },
-  { month: "May", sales: 2090 },
+  { month: "Abr", sales: 730 },
+  { month: "Mai", sales: 2090 },
   { month: "Jun", sales: 2140 },
 ];
 
 const chartConfig = {
   sales: {
-    label: "Sales",
+    label: "Vendas",
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig;
@@ -35,7 +35,7 @@ export function SalesChart() {
           axisLine={false}
           tickMargin={8}
           fontSize={12}
-          tickFormatter={(value) => `$${value / 1000}k`}
+          tickFormatter={(value) => `R$${value / 1000}k`}
         />
         <ChartTooltip
           cursor={false}
