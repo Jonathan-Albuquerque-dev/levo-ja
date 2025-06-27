@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import Link from 'next/link'
+import { Package2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -39,8 +40,11 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+        <CardHeader className="items-center text-center">
+          <CardTitle className="flex items-center gap-2 text-3xl">
+            <Package2 className="h-8 w-8 text-primary" />
+            <span>Levo Já</span>
+          </CardTitle>
           <CardDescription>
             Digite seu e-mail e senha para acessar o painel.
           </CardDescription>
@@ -68,7 +72,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-             <div className="text-right">
+             <div className="text-center">
                 <Link
                   href="#"
                   className="text-sm text-primary hover:underline"
