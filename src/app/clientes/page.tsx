@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from "react"
@@ -59,12 +60,23 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 type Customer = {
   id: string;
   name: string;
   email: string;
+  phone: string;
+  cpf: string;
+  address: {
+    street: string;
+    number: string;
+    complement?: string;
+    zipCode: string;
+    city: string;
+    state: string;
+  };
   type: "Ativo" | "Novo" | "Inativo";
   signupDate: string;
   totalSpent: number;
@@ -78,6 +90,15 @@ const initialCustomers: Customer[] = [
     id: "1",
     name: "Ana Silva",
     email: "ana.silva@email.com",
+    phone: "11987654321",
+    cpf: "123.456.789-00",
+    address: {
+      street: "Rua das Flores",
+      number: "123",
+      zipCode: "01000-000",
+      city: "São Paulo",
+      state: "SP",
+    },
     type: "Ativo",
     signupDate: "2023-01-15",
     totalSpent: 1250.50,
@@ -89,6 +110,15 @@ const initialCustomers: Customer[] = [
     id: "2",
     name: "Bruno Costa",
     email: "bruno.costa@email.com",
+    phone: "21912345678",
+    cpf: "987.654.321-00",
+    address: {
+      street: "Avenida Copacabana",
+      number: "456",
+      zipCode: "22020-001",
+      city: "Rio de Janeiro",
+      state: "RJ",
+    },
     type: "Novo",
     signupDate: "2024-03-20",
     totalSpent: 320.00,
@@ -98,6 +128,18 @@ const initialCustomers: Customer[] = [
   },
 ];
 
+const initialNewCustomerState = {
+  name: '',
+  email: '',
+  phone: '',
+  cpf: '',
+  street: '',
+  number: '',
+  complement: '',
+  zipCode: '',
+  city: '',
+  state: '',
+};
 
 export default function ClientesPage() {
   const { toast } = useToast();
@@ -105,15 +147,25 @@ export default function ClientesPage() {
   const [isAddDialogOpen, setAddDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
-  const [newCustomer, setNewCustomer] = useState({ name: '', email: '' });
+  const [newCustomer, setNewCustomer] = useState(initialNewCustomerState);
 
   const handleAddCustomer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newCustomer.name && newCustomer.email) {
+    if (newCustomer.name && newCustomer.email && newCustomer.phone && newCustomer.cpf && newCustomer.zipCode && newCustomer.street && newCustomer.number && newCustomer.city && newCustomer.state) {
       const customerToAdd: Customer = {
         id: crypto.randomUUID(),
         name: newCustomer.name,
         email: newCustomer.email,
+        phone: newCustomer.phone,
+        cpf: newCustomer.cpf,
+        address: {
+          street: newCustomer.street,
+          number: newCustomer.number,
+          complement: newCustomer.complement,
+          zipCode: newCustomer.zipCode,
+          city: newCustomer.city,
+          state: newCustomer.state,
+        },
         type: "Novo",
         signupDate: new Date().toISOString().split('T')[0],
         totalSpent: 0,
@@ -123,10 +175,10 @@ export default function ClientesPage() {
       };
       setCustomers(prev => [customerToAdd, ...prev]);
       setAddDialogOpen(false);
-      setNewCustomer({ name: '', email: '' });
+      setNewCustomer(initialNewCustomerState);
       toast({ title: "Sucesso!", description: "Cliente adicionado." });
     } else {
-      toast({ variant: "destructive", title: "Erro!", description: "Por favor, preencha todos os campos." });
+      toast({ variant: "destructive", title: "Erro!", description: "Por favor, preencha todos os campos obrigatórios." });
     }
   };
 
@@ -147,6 +199,25 @@ export default function ClientesPage() {
     }
   };
 
+  const handleEditChange = (field: keyof Customer, value: any) => {
+    if (editingCustomer) {
+      setEditingCustomer({ ...editingCustomer, [field]: value });
+    }
+  };
+
+  const handleEditAddressChange = (field: keyof Customer['address'], value: any) => {
+    if (editingCustomer) {
+      setEditingCustomer({
+        ...editingCustomer,
+        address: {
+          ...editingCustomer.address,
+          [field]: value
+        }
+      });
+    }
+  };
+
+
   return (
     <DashboardLayout>
       <div className="flex items-center justify-between">
@@ -160,7 +231,7 @@ export default function ClientesPage() {
               </span>
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[600px]">
             <form onSubmit={handleAddCustomer}>
               <DialogHeader>
                 <DialogTitle>Adicionar Novo Cliente</DialogTitle>
@@ -168,16 +239,50 @@ export default function ClientesPage() {
                   Preencha as informações do novo cliente.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">Nome</Label>
-                  <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} className="col-span-3" placeholder="Ex: João da Silva" />
+              <ScrollArea className="h-96 w-full pr-6">
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">Nome</Label>
+                    <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} className="col-span-3" placeholder="Ex: João da Silva" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="email" className="text-right">Email</Label>
+                    <Input id="email" type="email" value={newCustomer.email} onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})} className="col-span-3" placeholder="Ex: joao@email.com" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="phone" className="text-right">Telefone</Label>
+                    <Input id="phone" value={newCustomer.phone} onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})} className="col-span-3" placeholder="Ex: 11987654321" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="cpf" className="text-right">CPF</Label>
+                    <Input id="cpf" value={newCustomer.cpf} onChange={(e) => setNewCustomer({...newCustomer, cpf: e.target.value})} className="col-span-3" placeholder="Ex: 123.456.789-00" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="zipCode" className="text-right">CEP</Label>
+                    <Input id="zipCode" value={newCustomer.zipCode} onChange={(e) => setNewCustomer({...newCustomer, zipCode: e.target.value})} className="col-span-3" placeholder="Ex: 01000-000" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="street" className="text-right">Rua</Label>
+                    <Input id="street" value={newCustomer.street} onChange={(e) => setNewCustomer({...newCustomer, street: e.target.value})} className="col-span-3" placeholder="Ex: Rua das Flores" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="number" className="text-right">Número</Label>
+                    <Input id="number" value={newCustomer.number} onChange={(e) => setNewCustomer({...newCustomer, number: e.target.value})} className="col-span-3" placeholder="Ex: 123" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="complement" className="text-right">Complemento</Label>
+                    <Input id="complement" value={newCustomer.complement} onChange={(e) => setNewCustomer({...newCustomer, complement: e.target.value})} className="col-span-3" placeholder="Ex: Apto 4B" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="city" className="text-right">Cidade</Label>
+                    <Input id="city" value={newCustomer.city} onChange={(e) => setNewCustomer({...newCustomer, city: e.target.value})} className="col-span-3" placeholder="Ex: São Paulo" />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="state" className="text-right">Estado</Label>
+                    <Input id="state" value={newCustomer.state} onChange={(e) => setNewCustomer({...newCustomer, state: e.target.value})} className="col-span-3" placeholder="Ex: SP" />
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email" className="text-right">Email</Label>
-                  <Input id="email" type="email" value={newCustomer.email} onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})} className="col-span-3" placeholder="Ex: joao@email.com" />
-                </div>
-              </div>
+              </ScrollArea>
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">Cancelar</Button>
@@ -273,7 +378,7 @@ export default function ClientesPage() {
       </Card>
 
       <Dialog open={!!editingCustomer} onOpenChange={(isOpen) => !isOpen && setEditingCustomer(null)}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[600px]">
           <form onSubmit={handleEditCustomer}>
             <DialogHeader>
               <DialogTitle>Editar Cliente</DialogTitle>
@@ -281,16 +386,50 @@ export default function ClientesPage() {
                 Atualize as informações do cliente.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name-edit" className="text-right">Nome</Label>
-                <Input id="name-edit" value={editingCustomer?.name || ''} onChange={(e) => editingCustomer && setEditingCustomer({...editingCustomer, name: e.target.value})} className="col-span-3" />
+             <ScrollArea className="h-96 w-full pr-6">
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name-edit" className="text-right">Nome</Label>
+                  <Input id="name-edit" value={editingCustomer?.name || ''} onChange={(e) => handleEditChange('name', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email-edit" className="text-right">Email</Label>
+                  <Input id="email-edit" type="email" value={editingCustomer?.email || ''} onChange={(e) => handleEditChange('email', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="phone-edit" className="text-right">Telefone</Label>
+                  <Input id="phone-edit" value={editingCustomer?.phone || ''} onChange={(e) => handleEditChange('phone', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="cpf-edit" className="text-right">CPF</Label>
+                  <Input id="cpf-edit" value={editingCustomer?.cpf || ''} onChange={(e) => handleEditChange('cpf', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="zipCode-edit" className="text-right">CEP</Label>
+                  <Input id="zipCode-edit" value={editingCustomer?.address?.zipCode || ''} onChange={(e) => handleEditAddressChange('zipCode', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="street-edit" className="text-right">Rua</Label>
+                  <Input id="street-edit" value={editingCustomer?.address?.street || ''} onChange={(e) => handleEditAddressChange('street', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="number-edit" className="text-right">Número</Label>
+                  <Input id="number-edit" value={editingCustomer?.address?.number || ''} onChange={(e) => handleEditAddressChange('number', e.target.value)} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="complement-edit" className="text-right">Complemento</Label>
+                  <Input id="complement-edit" value={editingCustomer?.address?.complement || ''} onChange={(e) => handleEditAddressChange('complement', e.target.value)} className="col-span-3" />
+                </div>
+                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="city-edit" className="text-right">Cidade</Label>
+                  <Input id="city-edit" value={editingCustomer?.address?.city || ''} onChange={(e) => handleEditAddressChange('city', e.target.value)} className="col-span-3" />
+                </div>
+                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="state-edit" className="text-right">Estado</Label>
+                  <Input id="state-edit" value={editingCustomer?.address?.state || ''} onChange={(e) => handleEditAddressChange('state', e.target.value)} className="col-span-3" />
+                </div>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email-edit" className="text-right">Email</Label>
-                <Input id="email-edit" type="email" value={editingCustomer?.email || ''} onChange={(e) => editingCustomer && setEditingCustomer({...editingCustomer, email: e.target.value})} className="col-span-3" />
-              </div>
-            </div>
+            </ScrollArea>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditingCustomer(null)}>Cancelar</Button>
               <Button type="submit">Salvar Alterações</Button>
