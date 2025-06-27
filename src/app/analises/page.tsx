@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { SalesChart } from "@/components/sales-chart"
-import { DollarSign, Users, CreditCard, Activity } from "lucide-react"
+import { DollarSign, Users, ShoppingCart, PackageX } from "lucide-react"
 
 export default function AnalisesPage() {
   return (
@@ -20,54 +20,54 @@ export default function AnalisesPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Visitantes Únicos
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12,583</div>
-            <p className="text-xs text-muted-foreground">
-              +15.2% do último mês
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Taxa de Conversão
+              Faturamento
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3.5%</div>
+            <div className="text-2xl font-bold">R$45.231,89</div>
             <p className="text-xs text-muted-foreground">
-              +5.1% do último mês
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ticket Médio</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">R$125,50</div>
-            <p className="text-xs text-muted-foreground">
-              +8% do último mês
+              +20.1% do último mês
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Taxa de Rejeição
+              Número de Pedidos
             </CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">34%</div>
+            <div className="text-2xl font-bold">+2.350</div>
             <p className="text-xs text-muted-foreground">
-              -2.1% desde ontem
+              +18.1% do último mês
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Cancelados</CardTitle>
+            <PackageX className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+32</div>
+            <p className="text-xs text-muted-foreground">
+              +2.1% do último mês
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Novos Clientes Cadastrados
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+573</div>
+            <p className="text-xs text-muted-foreground">
+              +35% do último mês
             </p>
           </CardContent>
         </Card>
