@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { type Order } from '@/lib/data';
 import { Package2 } from 'lucide-react';
-import { Separator } from './ui/separator';
 
 interface PrintableOrderProps {
   order: Order;
@@ -71,7 +69,7 @@ export const PrintableOrder = React.forwardRef<HTMLDivElement, PrintableOrderPro
                     <span className="font-semibold">Frete</span>
                     <span>Grátis</span>
                 </div>
-                <Separator className="my-1 bg-gray-300"/>
+                <div className="my-1 h-px bg-gray-300"/>
                  <div className="flex justify-between items-center py-2 text-lg font-bold text-primary">
                     <span>Total</span>
                     <span>{order.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
