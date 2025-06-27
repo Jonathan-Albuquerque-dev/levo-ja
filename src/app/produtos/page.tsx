@@ -155,6 +155,12 @@ export default function ProdutosPage() {
   const [newProduct, setNewProduct] = useState(initialNewProductState);
   const [activeTab, setActiveTab] = useState("todos");
 
+  const filteredProducts = products.filter(product => {
+    if (activeTab === "todos") return true;
+    if (activeTab === "ativo") return product.status === "Ativo";
+    return product.status.toLowerCase() === activeTab;
+  });
+
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (newProduct.name && newProduct.price && newProduct.stock && newProduct.category && newProduct.brand) {
@@ -214,14 +220,63 @@ export default function ProdutosPage() {
   };
 
   const handleExport = () => {
-    toast({ title: "Funcionalidade em desenvolvimento", description: "A exportação de produtos estará disponível em breve." })
-  }
+    const productsToExport = filteredProducts;
 
-  const filteredProducts = products.filter(product => {
-    if (activeTab === "todos") return true;
-    if (activeTab === "ativo") return product.status === "Ativo";
-    return product.status.toLowerCase() === activeTab;
-  });
+    if (productsToExport.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Nenhum produto para exportar",
+        description: "Não há produtos na lista atual para exportar.",
+      });
+      return;
+    }
+
+    const csvHeader = [
+      "ID", "Nome", "Status", "Preço", "Estoque", "Data de Criação", 
+      "URL da Imagem", "Categoria", "Marca", "Unidade de Medida", "Descrição"
+    ].join(',');
+
+    const escapeCsvField = (field: string | number): string => {
+      const str = String(field);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const csvRows = productsToExport.map(product => {
+      return [
+        escapeCsvField(product.id),
+        escapeCsvField(product.name),
+        escapeCsvField(product.status),
+        escapeCsvField(product.price),
+        escapeCsvField(product.stock),
+        escapeCsvField(product.createdAt),
+        escapeCsvField(product.image),
+        escapeCsvField(product.category),
+        escapeCsvField(product.brand),
+        escapeCsvField(product.unitOfMeasure),
+        escapeCsvField(product.description),
+      ].join(',');
+    });
+
+    const csvContent = [csvHeader, ...csvRows].join('\n');
+    const blob = new Blob([`\uFEFF${csvContent}`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "produtos.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Exportação Concluída",
+      description: `O arquivo "produtos.csv" com ${productsToExport.length} produtos foi baixado.`,
+    });
+  };
 
   return (
     <DashboardLayout>
