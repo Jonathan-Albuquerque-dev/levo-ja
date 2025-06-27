@@ -1,9 +1,8 @@
 
 'use client'
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import jsPDF from "jspdf"
-import html2canvas from "html2canvas"
 import {
   File,
   MoreHorizontal,
@@ -92,7 +91,6 @@ import {
   initialProducts,
   type Product,
 } from "@/lib/data"
-import { PrintableOrder } from "@/components/printable-order"
 import { cn } from "@/lib/utils"
 
 
@@ -120,33 +118,86 @@ export default function PedidosPage() {
   const [productToAddId, setProductToAddId] = useState<string | undefined>(undefined);
   const [productToAddQuantity, setProductToAddQuantity] = useState(1);
 
-  const printComponentRef = useRef<HTMLDivElement>(null);
-
-  const handleGeneratePdf = async () => {
-    const input = printComponentRef.current;
-    if (!input || !viewingOrder) {
-      toast({ variant: "destructive", title: "Erro!", description: "Não foi possível gerar o PDF." });
+  const handleGeneratePdf = () => {
+    if (!viewingOrder) {
+      toast({ variant: "destructive", title: "Erro!", description: "Nenhum pedido selecionado." });
       return;
     }
 
     toast({ title: "Gerando PDF...", description: "Por favor, aguarde um momento." });
 
     try {
-      const canvas = await html2canvas(input, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff'
-      });
-      const imgData = canvas.toDataURL('image/png');
+      const doc = new jsPDF();
+      let y = 20;
+
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Levo Já", 20, y);
+      y += 8;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Pedido: #${viewingOrder.id}`, 20, y);
+      doc.text(`Data: ${new Date(viewingOrder.orderDate).toLocaleDateString('pt-BR')}`, 140, y, { align: 'left' });
+      y += 10;
       
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height]
-      });
+      doc.setLineWidth(0.5);
+      doc.line(20, y, 190, y);
+      y += 10;
+
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Cliente", 20, y);
+      y += 7;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(viewingOrder.customerName, 20, y);
+      y += 5;
+      doc.text(viewingOrder.customerEmail, 20, y);
+      y += 5;
+      doc.text(viewingOrder.shippingAddress, 20, y);
+      y += 15;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-      pdf.save(`Pedido-${viewingOrder.id}.pdf`);
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Itens do Pedido", 20, y);
+      y += 7;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Produto", 20, y);
+      doc.text("Qtd.", 130, y, { align: 'right' });
+      doc.text("Preço Unit.", 160, y, { align: 'right' });
+      doc.text("Subtotal", 190, y, { align: 'right' });
+      y += 3;
+      doc.setLineWidth(0.2);
+      doc.line(20, y, 190, y);
+      y += 5;
+      
+      doc.setFont('helvetica', 'normal');
+      viewingOrder.items.forEach(item => {
+        const itemText = `${item.quantity}x ${item.name}`;
+        const subtotal = (item.price * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const price = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        doc.text(item.name, 20, y);
+        doc.text(String(item.quantity), 130, y, { align: 'right' });
+        doc.text(price, 160, y, { align: 'right' });
+        doc.text(subtotal, 190, y, { align: 'right' });
+        y += 7;
+      });
+
+      y += 5;
+      doc.line(130, y, 190, y);
+      y += 7;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Total:", 130, y, { align: 'left' });
+      doc.text(viewingOrder.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), 190, y, { align: 'right' });
+
+      doc.save(`Pedido-${viewingOrder.id}.pdf`);
 
       toast({ title: "Sucesso!", description: "PDF do pedido gerado e baixado." });
 
@@ -650,9 +701,6 @@ export default function PedidosPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className="hidden">
-        {viewingOrder && <PrintableOrder ref={printComponentRef} order={viewingOrder} />}
-      </div>
     </DashboardLayout>
   )
 }
