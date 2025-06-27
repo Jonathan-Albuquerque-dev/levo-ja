@@ -118,7 +118,7 @@ export default function PedidosPage() {
   const [productToAddId, setProductToAddId] = useState<string | undefined>(undefined);
   const [productToAddQuantity, setProductToAddQuantity] = useState(1);
 
-  const printComponentRef = useRef<HTMLDivElement>(null);
+  const printComponentRef = useRef<PrintableOrder>(null);
 
   const handlePrint = useReactToPrint({
     content: () => printComponentRef.current,
