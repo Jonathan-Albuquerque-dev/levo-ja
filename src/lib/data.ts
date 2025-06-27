@@ -146,6 +146,11 @@ export const initialProducts: Product[] = [
   },
 ];
 
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const todayString = `${year}-${month}-${day}`;
 
 export const initialOrders: Order[] = [
   {
@@ -154,7 +159,7 @@ export const initialOrders: Order[] = [
     customerName: "Ana Silva",
     customerEmail: "ana.silva@email.com",
     status: "Confirmado",
-    orderDate: "2023-06-23",
+    orderDate: todayString,
     total: 190.00,
     items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 2, price: 49.99 }, { id: "2", name: "Moletom com Capuz Eco-Conforto", quantity: 1, price: 89.99 }],
     shippingAddress: "Rua das Flores, 123, São Paulo, SP"
@@ -165,7 +170,7 @@ export const initialOrders: Order[] = [
     customerName: "Bruno Costa",
     customerEmail: "bruno.costa@email.com",
     status: "Em Andamento",
-    orderDate: "2023-06-24",
+    orderDate: todayString,
     total: 150.00,
     items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 3, price: 49.99 }],
     shippingAddress: "Avenida Copacabana, 456, Rio de Janeiro, RJ"
@@ -176,7 +181,7 @@ export const initialOrders: Order[] = [
     customerName: "Ana Silva",
     customerEmail: "ana.silva@email.com",
     status: "Saiu para Entrega",
-    orderDate: "2023-06-25",
+    orderDate: todayString,
     total: 340.00,
     items: [{ id: "3", name: "Tênis de Corrida Zyon-Flex", quantity: 1, price: 159.90 }, { id: "2", name: "Moletom com Capuz Eco-Conforto", quantity: 2, price: 89.99 }],
     shippingAddress: "Rua das Flores, 123, São Paulo, SP"
@@ -187,7 +192,7 @@ export const initialOrders: Order[] = [
     customerName: "Bruno Costa",
     customerEmail: "bruno.costa@email.com",
     status: "Finalizado",
-    orderDate: "2023-06-26",
+    orderDate: todayString,
     total: 450.00,
     items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 9, price: 49.99 }],
     shippingAddress: "Avenida Copacabana, 456, Rio de Janeiro, RJ"

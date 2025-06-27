@@ -129,7 +129,9 @@ export default function PedidosPage() {
   const [productToAddQuantity, setProductToAddQuantity] = useState(1);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: new Date(),
+  });
 
   const handleGeneratePdf = () => {
     if (!viewingOrder) {
@@ -171,11 +173,13 @@ export default function PedidosPage() {
 
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      doc.text(viewingOrder.customerName, 20, y);
+      doc.text(customer.name, 20, y);
       y += 5;
       doc.text(customer.phone, 20, y);
       y += 5;
-      doc.text(viewingOrder.shippingAddress, 20, y);
+      const address = customer.address;
+      const fullAddress = `${address.street}, ${address.number}${address.complement ? `, ${address.complement}` : ''} - ${address.city}, ${address.state}`;
+      doc.text(fullAddress, 20, y);
       y += 15;
       
       doc.setFontSize(14);
