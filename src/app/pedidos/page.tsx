@@ -1,6 +1,5 @@
 import {
   File,
-  ListFilter,
   MoreHorizontal,
   PlusCircle,
 } from "lucide-react"
@@ -17,7 +16,6 @@ import {
 } from "@/components/ui/card"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -47,30 +45,12 @@ export default function PedidosPage() {
         <div className="flex items-center">
           <TabsList>
             <TabsTrigger value="todos">Todos</TabsTrigger>
-            <TabsTrigger value="nao-realizado">Não Realizado</TabsTrigger>
-            <TabsTrigger value="nao-pago">Não Pago</TabsTrigger>
-            <TabsTrigger value="enviado">Enviado</TabsTrigger>
-            <TabsTrigger value="concluido">Concluído</TabsTrigger>
+            <TabsTrigger value="confirmado">Confirmado</TabsTrigger>
+            <TabsTrigger value="em-andamento">Em Andamento</TabsTrigger>
+            <TabsTrigger value="saiu-para-entrega">Saiu para Entrega</TabsTrigger>
+            <TabsTrigger value="finalizado">Finalizado</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 gap-1">
-                  <ListFilter className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Filtro
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Ativo
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Arquivado</DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <Button size="sm" variant="outline" className="h-8 gap-1">
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -123,7 +103,7 @@ export default function PedidosPage() {
                       Venda
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">Realizado</Badge>
+                      <Badge variant="outline">Confirmado</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       2023-06-23
@@ -161,10 +141,10 @@ export default function PedidosPage() {
                       </div>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      Reembolso
+                      Venda
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">Recusado</Badge>
+                      <Badge variant="outline">Em Andamento</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       2023-06-24
@@ -205,7 +185,7 @@ export default function PedidosPage() {
                       Venda
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">Não Realizado</Badge>
+                      <Badge variant="outline">Saiu para Entrega</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       2023-06-25
@@ -246,7 +226,7 @@ export default function PedidosPage() {
                       Venda
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">Realizado</Badge>
+                      <Badge variant="secondary">Finalizado</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       2023-06-26
@@ -287,7 +267,7 @@ export default function PedidosPage() {
                       Venda
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">Realizado</Badge>
+                      <Badge variant="secondary">Finalizado</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       2023-06-27
