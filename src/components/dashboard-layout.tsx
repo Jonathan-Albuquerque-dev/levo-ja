@@ -42,8 +42,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { type Order, initialOrders } from "@/lib/data"
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export function DashboardLayout({ children, orders: ordersProp }: { children: React.ReactNode, orders?: Order[] }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -61,10 +62,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('isAuthenticated');
     router.push('/login');
   };
+  
+  const ordersToCount = ordersProp || initialOrders;
+  const confirmedOrdersCount = ordersToCount.filter(
+    (order) => order.status === "Confirmado"
+  ).length;
 
   const navLinks = [
     { href: "/", label: "Painel", icon: Home },
-    { href: "/pedidos", label: "Pedidos", icon: ShoppingCart, badge: "6" },
+    { href: "/pedidos", label: "Pedidos", icon: ShoppingCart, badge: confirmedOrdersCount > 0 ? String(confirmedOrdersCount) : undefined },
     { href: "/produtos", label: "Produtos", icon: Package },
     { href: "/clientes", label: "Clientes", icon: Users },
     { href: "/analises", label: "Análises", icon: LineChart },

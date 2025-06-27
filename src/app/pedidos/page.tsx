@@ -409,7 +409,7 @@ export default function PedidosPage() {
   };
   
   return (
-    <DashboardLayout>
+    <DashboardLayout orders={orders}>
       <div className="flex items-center">
         <div className="flex items-center gap-2">
           <div className="relative hidden sm:block">
