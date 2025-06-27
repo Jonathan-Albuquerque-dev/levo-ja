@@ -16,7 +16,7 @@ import {
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -92,6 +92,7 @@ import {
   type Product,
 } from "@/lib/data"
 import { PrintableOrder } from "@/components/printable-order"
+import { cn } from "@/lib/utils"
 
 
 const statusConfig: Record<OrderStatus, { variant: 'outline' | 'secondary' | 'default', icon: React.ElementType, color: string }> = {
@@ -607,7 +608,15 @@ export default function PedidosPage() {
               Imprimir Pedido
             </Button>
             <DialogClose asChild>
-              <Button variant="outline" className="sm:ml-auto">Fechar</Button>
+              <button
+                type="button"
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "sm:ml-auto"
+                )}
+              >
+                Fechar
+              </button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
