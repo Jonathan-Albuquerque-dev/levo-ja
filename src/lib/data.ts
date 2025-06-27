@@ -10,6 +10,7 @@ export type OrderItem = {
 
 export type Order = {
   id: string;
+  customerId: string;
   customerName: string;
   customerEmail: string;
   status: OrderStatus;
@@ -149,18 +150,20 @@ export const initialProducts: Product[] = [
 export const initialOrders: Order[] = [
   {
     id: "ORD001",
-    customerName: "Liam Johnson",
-    customerEmail: "liam@example.com",
+    customerId: "1",
+    customerName: "Ana Silva",
+    customerEmail: "ana.silva@email.com",
     status: "Confirmado",
     orderDate: "2023-06-23",
-    total: 250.00,
-    items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 2, price: 49.99 }, { id: "2", name: "Moletom Eco-Conforto", quantity: 1, price: 89.99 }],
+    total: 190.00,
+    items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 2, price: 49.99 }, { id: "2", name: "Moletom com Capuz Eco-Conforto", quantity: 1, price: 89.99 }],
     shippingAddress: "Rua das Flores, 123, São Paulo, SP"
   },
   {
     id: "ORD002",
-    customerName: "Olivia Smith",
-    customerEmail: "olivia@example.com",
+    customerId: "2",
+    customerName: "Bruno Costa",
+    customerEmail: "bruno.costa@email.com",
     status: "Em Andamento",
     orderDate: "2023-06-24",
     total: 150.00,
@@ -169,22 +172,24 @@ export const initialOrders: Order[] = [
   },
   {
     id: "ORD003",
-    customerName: "Noah Williams",
-    customerEmail: "noah@example.com",
+    customerId: "1",
+    customerName: "Ana Silva",
+    customerEmail: "ana.silva@email.com",
     status: "Saiu para Entrega",
     orderDate: "2023-06-25",
-    total: 350.00,
-    items: [{ id: "3", name: "Tênis de Corrida Zyon-Flex", quantity: 1, price: 159.90 }, { id: "2", name: "Moletom Eco-Conforto", quantity: 2, price: 89.99 }],
-    shippingAddress: "Rua da Praia, 789, Salvador, BA"
+    total: 340.00,
+    items: [{ id: "3", name: "Tênis de Corrida Zyon-Flex", quantity: 1, price: 159.90 }, { id: "2", name: "Moletom com Capuz Eco-Conforto", quantity: 2, price: 89.99 }],
+    shippingAddress: "Rua das Flores, 123, São Paulo, SP"
   },
   {
     id: "ORD004",
-    customerName: "Emma Brown",
-    customerEmail: "emma@example.com",
+    customerId: "2",
+    customerName: "Bruno Costa",
+    customerEmail: "bruno.costa@email.com",
     status: "Finalizado",
     orderDate: "2023-06-26",
     total: 450.00,
     items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 9, price: 49.99 }],
-    shippingAddress: "Avenida Paulista, 1000, São Paulo, SP"
+    shippingAddress: "Avenida Copacabana, 456, Rio de Janeiro, RJ"
   },
 ];

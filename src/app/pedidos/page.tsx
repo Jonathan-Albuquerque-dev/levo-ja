@@ -124,6 +124,12 @@ export default function PedidosPage() {
       return;
     }
 
+    const customer = customers.find(c => c.id === viewingOrder.customerId);
+    if (!customer) {
+        toast({ variant: "destructive", title: "Erro!", description: "Cliente do pedido não encontrado." });
+        return;
+    }
+
     toast({ title: "Gerando PDF...", description: "Por favor, aguarde um momento." });
 
     try {
@@ -154,7 +160,7 @@ export default function PedidosPage() {
       doc.setFont('helvetica', 'normal');
       doc.text(viewingOrder.customerName, 20, y);
       y += 5;
-      doc.text(viewingOrder.customerEmail, 20, y);
+      doc.text(customer.phone, 20, y);
       y += 5;
       doc.text(viewingOrder.shippingAddress, 20, y);
       y += 15;
@@ -177,7 +183,6 @@ export default function PedidosPage() {
       
       doc.setFont('helvetica', 'normal');
       viewingOrder.items.forEach(item => {
-        const itemText = `${item.quantity}x ${item.name}`;
         const subtotal = (item.price * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         const price = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -317,6 +322,7 @@ export default function PedidosPage() {
     
     const orderToAdd: Order = {
       id: `ORD${String(orders.length + 1).padStart(3, '0')}`,
+      customerId: selectedCustomer.id,
       customerName: selectedCustomer.name,
       customerEmail: selectedCustomer.email,
       status: 'Confirmado',
