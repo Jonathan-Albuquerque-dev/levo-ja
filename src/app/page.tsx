@@ -2,7 +2,7 @@ import {
   Activity,
   CreditCard,
   DollarSign,
-  Users,
+  ShoppingCart,
 } from "lucide-react"
 
 import {
@@ -42,14 +42,14 @@ export default function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Assinaturas
+              Pedidos de Hoje
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
+            <div className="text-2xl font-bold">+128</div>
             <p className="text-xs text-muted-foreground">
-              +180,1% do último mês
+              +12% desde ontem
             </p>
           </CardContent>
         </Card>
