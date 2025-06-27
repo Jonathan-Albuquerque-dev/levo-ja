@@ -41,7 +41,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center">
-          <CardTitle className="flex items-center gap-2 text-3xl">
+          <CardTitle className="flex flex-col items-center gap-2 text-3xl">
             <Package2 className="h-8 w-8 text-primary" />
             <span>Levo Já</span>
           </CardTitle>
