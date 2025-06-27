@@ -1,7 +1,8 @@
 
 'use client'
 
-import { useState } from "react"
+import { useState, useRef } from "react"
+import { useReactToPrint } from "react-to-print"
 import {
   File,
   MoreHorizontal,
@@ -11,6 +12,7 @@ import {
   Package,
   Hourglass,
   X,
+  Printer
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -89,6 +91,7 @@ import {
   initialProducts,
   type Product,
 } from "@/lib/data"
+import { PrintableOrder } from "@/components/printable-order"
 
 
 const statusConfig: Record<OrderStatus, { variant: 'outline' | 'secondary' | 'default', icon: React.ElementType, color: string }> = {
@@ -110,11 +113,19 @@ export default function PedidosPage() {
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null)
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null)
   
-  // State for the new order form
   const [newOrderCustomerId, setNewOrderCustomerId] = useState<string | undefined>(undefined);
   const [newOrderItems, setNewOrderItems] = useState<OrderItem[]>([]);
   const [productToAddId, setProductToAddId] = useState<string | undefined>(undefined);
   const [productToAddQuantity, setProductToAddQuantity] = useState(1);
+
+  const printComponentRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => printComponentRef.current,
+    documentTitle: `Pedido-${viewingOrder?.id || 'novo'}`,
+    onAfterPrint: () => toast({ title: "Impressão enviada com sucesso!" }),
+  });
+
 
   const filteredOrders = orders.filter(order => {
     if (activeTab === "todos") return true
@@ -590,13 +601,20 @@ export default function PedidosPage() {
               </ScrollArea>
             );
           })()}
-          <DialogFooter>
+          <DialogFooter className="sm:justify-start gap-2">
+            <Button onClick={handlePrint}>
+              <Printer className="mr-2 h-4 w-4" />
+              Imprimir Pedido
+            </Button>
             <DialogClose asChild>
-              <Button variant="outline">Fechar</Button>
+              <Button variant="outline" className="sm:ml-auto">Fechar</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <div className="hidden">
+        {viewingOrder && <PrintableOrder ref={printComponentRef} order={viewingOrder} />}
+      </div>
     </DashboardLayout>
   )
 }
