@@ -12,8 +12,12 @@ import {
   Package,
   Hourglass,
   X,
-  Printer
+  Printer,
+  Search,
+  Calendar as CalendarIcon,
 } from "lucide-react"
+import { format } from "date-fns"
+import { type DateRange } from "react-day-picker"
 
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -82,6 +86,12 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { 
   initialOrders, 
   type Order, 
   type OrderStatus, 
@@ -117,6 +127,9 @@ export default function PedidosPage() {
   const [newOrderItems, setNewOrderItems] = useState<OrderItem[]>([]);
   const [productToAddId, setProductToAddId] = useState<string | undefined>(undefined);
   const [productToAddQuantity, setProductToAddQuantity] = useState(1);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const handleGeneratePdf = () => {
     if (!viewingOrder) {
@@ -214,9 +227,37 @@ export default function PedidosPage() {
 
 
   const filteredOrders = orders.filter(order => {
-    if (activeTab === "todos") return true
-    const normalizedTab = activeTab.replace(/-/g, ' ');
-    return order.status.toLowerCase() === normalizedTab;
+    // Tab filter
+    const tabMatch = activeTab === "todos" || order.status.toLowerCase() === activeTab.replace(/-/g, ' ');
+
+    // Search query filter
+    const searchMatch = searchQuery === "" ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Date range filter
+    const dateMatch = (() => {
+      if (!dateRange?.from) {
+        return true;
+      }
+      const orderDate = new Date(order.orderDate + "T00:00:00"); // Treat as local midnight
+      if (dateRange.to) {
+        // Create a 'to' date that includes the whole day
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(23, 59, 59, 999);
+        return orderDate >= dateRange.from && orderDate <= toDate;
+      }
+      // Single day selection
+      const fromDate = dateRange.from;
+      return (
+        orderDate.getFullYear() === fromDate.getFullYear() &&
+        orderDate.getMonth() === fromDate.getMonth() &&
+        orderDate.getDate() === fromDate.getDate()
+      );
+    })();
+
+    return tabMatch && searchMatch && dateMatch;
   });
 
   const handleExport = () => {
@@ -378,6 +419,52 @@ export default function PedidosPage() {
             <TabsTrigger value="finalizado">Finalizado</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
+            <div className="relative hidden sm:block">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Pesquisar pedido..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 w-[150px] bg-background pl-8 lg:w-[250px]"
+              />
+            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "h-8 w-[220px] justify-start text-left font-normal",
+                    !dateRange && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dateRange?.from ? (
+                    dateRange.to ? (
+                      <>
+                        {format(dateRange.from, "dd/MM/y")} -{" "}
+                        {format(dateRange.to, "dd/MM/y")}
+                      </>
+                    ) : (
+                      format(dateRange.from, "dd/MM/y")
+                    )
+                  ) : (
+                    <span>Filtrar por data</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={dateRange?.from}
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  numberOfMonths={1}
+                />
+              </PopoverContent>
+            </Popover>
             <Button size="sm" variant="outline" className="h-8 gap-1" onClick={handleExport}>
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -526,7 +613,7 @@ export default function PedidosPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {order.orderDate}
+                          {new Date(order.orderDate + 'T00:00:00').toLocaleDateString('pt-BR')}
                         </TableCell>
                         <TableCell className="text-right">{order.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
                         <TableCell>
@@ -658,7 +745,7 @@ export default function PedidosPage() {
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">Data do Pedido</Label>
-                      <p className="font-medium">{viewingOrder.orderDate}</p>
+                      <p className="font-medium">{new Date(viewingOrder.orderDate + 'T00:00:00').toLocaleDateString('pt-BR')}</p>
                     </div>
                     <div className="col-span-2">
                       <Label className="text-xs text-muted-foreground">Endereço de Entrega</Label>
