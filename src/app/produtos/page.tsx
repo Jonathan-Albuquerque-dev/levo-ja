@@ -6,6 +6,7 @@ import {
   File,
   MoreHorizontal,
   PlusCircle,
+  Search,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -154,11 +155,21 @@ export default function ProdutosPage() {
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
   const [newProduct, setNewProduct] = useState(initialNewProductState);
   const [activeTab, setActiveTab] = useState("todos");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredProducts = products.filter(product => {
-    if (activeTab === "todos") return true;
-    if (activeTab === "ativo") return product.status === "Ativo";
-    return product.status.toLowerCase() === activeTab;
+    const matchesTab = (() => {
+      if (activeTab === "todos") return true;
+      if (activeTab === "ativo") return product.status === "Ativo";
+      return product.status.toLowerCase() === activeTab;
+    })();
+    
+    const matchesSearch = 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesTab && matchesSearch;
   });
 
   const handleAddProduct = (e: React.FormEvent) => {
@@ -290,6 +301,16 @@ export default function ProdutosPage() {
             </TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
+            <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                    type="search"
+                    placeholder="Pesquisar produtos..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-8 w-[150px] bg-background pl-8 lg:w-[250px]"
+                />
+            </div>
             <Button size="sm" variant="outline" className="h-8 gap-1" onClick={handleExport}>
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
