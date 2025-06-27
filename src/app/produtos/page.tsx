@@ -71,6 +71,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 type Product = {
@@ -82,6 +84,10 @@ type Product = {
   createdAt: string;
   image: string;
   imageHint: string;
+  category: string;
+  brand: string;
+  unitOfMeasure: string;
+  description: string;
 };
 
 const initialProducts: Product[] = [
@@ -94,6 +100,10 @@ const initialProducts: Product[] = [
     createdAt: "2023-07-12",
     image: "https://placehold.co/64x64.png",
     imageHint: "tshirt product",
+    category: "Vestuário",
+    brand: "Hyper",
+    unitOfMeasure: "Unidade",
+    description: "Camiseta de algodão com estampa a laser que brilha no escuro."
   },
   {
     id: "2",
@@ -104,6 +114,10 @@ const initialProducts: Product[] = [
     createdAt: "2023-10-18",
     image: "https://placehold.co/64x64.png",
     imageHint: "hoodie product",
+    category: "Vestuário",
+    brand: "EcoWear",
+    unitOfMeasure: "Unidade",
+    description: "Moletom sustentável feito com materiais reciclados."
   },
    {
     id: "3",
@@ -114,6 +128,10 @@ const initialProducts: Product[] = [
     createdAt: "2023-05-30",
     image: "https://placehold.co/64x64.png",
     imageHint: "sneaker product",
+    category: "Calçados",
+    brand: "Zyon",
+    unitOfMeasure: "Par",
+    description: "Tênis leve e flexível para corredores de todos os níveis."
   },
 ];
 
@@ -121,6 +139,11 @@ const initialNewProductState = {
   name: '',
   price: '',
   stock: '',
+  category: '',
+  brand: '',
+  unitOfMeasure: 'Unidade',
+  description: '',
+  image: '',
 };
 
 export default function ProdutosPage() {
@@ -134,7 +157,7 @@ export default function ProdutosPage() {
 
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newProduct.name && newProduct.price && newProduct.stock) {
+    if (newProduct.name && newProduct.price && newProduct.stock && newProduct.category && newProduct.brand) {
       const productToAdd: Product = {
         id: crypto.randomUUID(),
         name: newProduct.name,
@@ -142,15 +165,19 @@ export default function ProdutosPage() {
         price: parseFloat(newProduct.price),
         stock: parseInt(newProduct.stock, 10),
         createdAt: new Date().toISOString().split('T')[0],
-        image: "https://placehold.co/64x64.png",
+        image: newProduct.image || "https://placehold.co/64x64.png",
         imageHint: "product placeholder",
+        category: newProduct.category,
+        brand: newProduct.brand,
+        unitOfMeasure: newProduct.unitOfMeasure,
+        description: newProduct.description,
       };
       setProducts(prev => [productToAdd, ...prev]);
       setAddDialogOpen(false);
       setNewProduct(initialNewProductState);
       toast({ title: "Sucesso!", description: "Produto adicionado." });
     } else {
-      toast({ variant: "destructive", title: "Erro!", description: "Por favor, preencha todos os campos." });
+      toast({ variant: "destructive", title: "Erro!", description: "Por favor, preencha todos os campos obrigatórios." });
     }
   };
 
@@ -192,6 +219,7 @@ export default function ProdutosPage() {
 
   const filteredProducts = products.filter(product => {
     if (activeTab === "todos") return true;
+    if (activeTab === "ativo") return product.status === "Ativo";
     return product.status.toLowerCase() === activeTab;
   });
 
@@ -202,7 +230,7 @@ export default function ProdutosPage() {
           <TabsList>
             <TabsTrigger value="todos">Todos</TabsTrigger>
             <TabsTrigger value="ativo">Ativo</TabsTrigger>
-            <TabsTrigger value="arquivado" className="hidden sm:flex">
+            <TabsTrigger value="arquivado">
               Arquivado
             </TabsTrigger>
           </TabsList>
@@ -222,7 +250,7 @@ export default function ProdutosPage() {
                         </span>
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[600px]">
                     <form onSubmit={handleAddProduct}>
                         <DialogHeader>
                             <DialogTitle>Adicionar Novo Produto</DialogTitle>
@@ -230,22 +258,57 @@ export default function ProdutosPage() {
                             Preencha as informações do novo produto.
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Nome</Label>
-                                <Input id="name" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} placeholder="Ex: Camiseta Branca" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="price">Preço</Label>
-                                <Input id="price" type="number" step="0.01" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} placeholder="Ex: 49.99" />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="stock">Estoque</Label>
-                                <Input id="stock" type="number" value={newProduct.stock} onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})} placeholder="Ex: 100" />
-                            </div>
-                            </div>
-                        </div>
+                        <ScrollArea className="h-96 w-full">
+                          <div className="grid gap-4 py-4 px-4">
+                              <div className="grid gap-2">
+                                  <Label htmlFor="name">Nome do Produto</Label>
+                                  <Input id="name" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} placeholder="Ex: Camiseta Branca" />
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="category">Categoria</Label>
+                                    <Input id="category" value={newProduct.category} onChange={(e) => setNewProduct({...newProduct, category: e.target.value})} placeholder="Ex: Vestuário" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="brand">Marca</Label>
+                                    <Input id="brand" value={newProduct.brand} onChange={(e) => setNewProduct({...newProduct, brand: e.target.value})} placeholder="Ex: Hyper" />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="price">Preço</Label>
+                                    <Input id="price" type="number" step="0.01" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} placeholder="Ex: 49.99" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="stock">Estoque</Label>
+                                    <Input id="stock" type="number" value={newProduct.stock} onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})} placeholder="Ex: 100" />
+                                </div>
+                                <div className="grid gap-2">
+                                  <Label htmlFor="unitOfMeasure">Unidade de Medida</Label>
+                                  <Select value={newProduct.unitOfMeasure} onValueChange={(value) => setNewProduct({...newProduct, unitOfMeasure: value})}>
+                                    <SelectTrigger id="unitOfMeasure">
+                                      <SelectValue placeholder="Selecione" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="Unidade">Unidade</SelectItem>
+                                      <SelectItem value="Par">Par</SelectItem>
+                                      <SelectItem value="Kg">Kg</SelectItem>
+                                      <SelectItem value="Litro">Litro</SelectItem>
+                                      <SelectItem value="Caixa">Caixa</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              <div className="grid gap-2">
+                                  <Label htmlFor="image">URL da Imagem</Label>
+                                  <Input id="image" value={newProduct.image} onChange={(e) => setNewProduct({...newProduct, image: e.target.value})} placeholder="https://placehold.co/64x64.png" />
+                              </div>
+                              <div className="grid gap-2">
+                                  <Label htmlFor="description">Descrição</Label>
+                                  <Textarea id="description" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} placeholder="Descreva o produto..." />
+                              </div>
+                          </div>
+                        </ScrollArea>
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button type="button" variant="outline">Cancelar</Button>
@@ -269,7 +332,7 @@ export default function ProdutosPage() {
       </Tabs>
 
       <Dialog open={!!editingProduct} onOpenChange={(isOpen) => !isOpen && setEditingProduct(null)}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px]">
           <form onSubmit={handleEditProduct}>
             <DialogHeader>
               <DialogTitle>Editar Produto</DialogTitle>
@@ -277,12 +340,23 @@ export default function ProdutosPage() {
                 Atualize as informações do produto.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                    <Label htmlFor="name-edit">Nome</Label>
-                    <Input id="name-edit" value={editingProduct?.name || ''} onChange={(e) => handleEditChange('name', e.target.value)} />
-                </div>
-                 <div className="grid grid-cols-2 gap-4">
+            <ScrollArea className="h-96 w-full">
+              <div className="grid gap-4 py-4 px-4">
+                  <div className="grid gap-2">
+                      <Label htmlFor="name-edit">Nome do Produto</Label>
+                      <Input id="name-edit" value={editingProduct?.name || ''} onChange={(e) => handleEditChange('name', e.target.value)} />
+                  </div>
+                   <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="category-edit">Categoria</Label>
+                        <Input id="category-edit" value={editingProduct?.category || ''} onChange={(e) => handleEditChange('category', e.target.value)} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="brand-edit">Marca</Label>
+                        <Input id="brand-edit" value={editingProduct?.brand || ''} onChange={(e) => handleEditChange('brand', e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="price-edit">Preço</Label>
                         <Input id="price-edit" type="number" step="0.01" value={editingProduct?.price || ''} onChange={(e) => handleEditChange('price', parseFloat(e.target.value) || 0)} />
@@ -291,20 +365,44 @@ export default function ProdutosPage() {
                         <Label htmlFor="stock-edit">Estoque</Label>
                         <Input id="stock-edit" type="number" value={editingProduct?.stock || ''} onChange={(e) => handleEditChange('stock', parseInt(e.target.value, 10) || 0)} />
                     </div>
-                </div>
-                 <div className="grid gap-2">
-                    <Label htmlFor="status-edit">Status</Label>
-                    <Select value={editingProduct?.status} onValueChange={(value) => handleEditChange('status', value)}>
-                      <SelectTrigger id="status-edit">
-                        <SelectValue placeholder="Selecione o status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Ativo">Ativo</SelectItem>
-                        <SelectItem value="Arquivado">Arquivado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                </div>
-            </div>
+                     <div className="grid gap-2">
+                      <Label htmlFor="unitOfMeasure-edit">Unidade de Medida</Label>
+                      <Select value={editingProduct?.unitOfMeasure} onValueChange={(value) => handleEditChange('unitOfMeasure', value)}>
+                        <SelectTrigger id="unitOfMeasure-edit">
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Unidade">Unidade</SelectItem>
+                          <SelectItem value="Par">Par</SelectItem>
+                          <SelectItem value="Kg">Kg</SelectItem>
+                          <SelectItem value="Litro">Litro</SelectItem>
+                          <SelectItem value="Caixa">Caixa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                   <div className="grid gap-2">
+                      <Label htmlFor="image-edit">URL da Imagem</Label>
+                      <Input id="image-edit" value={editingProduct?.image || ''} onChange={(e) => handleEditChange('image', e.target.value)} />
+                  </div>
+                   <div className="grid gap-2">
+                      <Label htmlFor="description-edit">Descrição</Label>
+                      <Textarea id="description-edit" value={editingProduct?.description || ''} onChange={(e) => handleEditChange('description', e.target.value)} />
+                  </div>
+                   <div className="grid gap-2">
+                      <Label htmlFor="status-edit">Status</Label>
+                      <Select value={editingProduct?.status} onValueChange={(value) => handleEditChange('status', value)}>
+                        <SelectTrigger id="status-edit">
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ativo">Ativo</SelectItem>
+                          <SelectItem value="Arquivado">Arquivado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                  </div>
+              </div>
+            </ScrollArea>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditingProduct(null)}>Cancelar</Button>
               <Button type="submit">Salvar Alterações</Button>
