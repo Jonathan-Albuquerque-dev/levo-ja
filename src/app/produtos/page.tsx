@@ -50,7 +50,6 @@ export default function ProdutosPage() {
           <TabsList>
             <TabsTrigger value="todos">Todos</TabsTrigger>
             <TabsTrigger value="ativo">Ativo</TabsTrigger>
-            <TabsTrigger value="rascunho">Rascunho</TabsTrigger>
             <TabsTrigger value="arquivado" className="hidden sm:flex">
               Arquivado
             </TabsTrigger>
@@ -71,7 +70,6 @@ export default function ProdutosPage() {
                 <DropdownMenuCheckboxItem checked>
                   Ativo
                 </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Rascunho</DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem>
                   Arquivado
                 </DropdownMenuCheckboxItem>
@@ -138,7 +136,7 @@ export default function ProdutosPage() {
                       Camiseta Hyper-Brilho Laser
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">Rascunho</Badge>
+                      <Badge variant="outline">Ativo</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       R$49,99
