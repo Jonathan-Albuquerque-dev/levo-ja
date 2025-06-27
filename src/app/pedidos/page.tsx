@@ -15,6 +15,7 @@ import {
   Printer,
   Search,
   Calendar as CalendarIcon,
+  Filter,
 } from "lucide-react"
 import { format } from "date-fns"
 import { type DateRange } from "react-day-picker"
@@ -34,6 +35,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -45,12 +48,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import {
   Dialog,
@@ -413,251 +410,263 @@ export default function PedidosPage() {
   
   return (
     <DashboardLayout>
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex items-center">
-          <TabsList>
-            <TabsTrigger value="todos">Todos</TabsTrigger>
-            <TabsTrigger value="confirmado">Confirmado</TabsTrigger>
-            <TabsTrigger value="em-andamento">Em Andamento</TabsTrigger>
-            <TabsTrigger value="saiu-para-entrega">Saiu para Entrega</TabsTrigger>
-            <TabsTrigger value="finalizado">Finalizado</TabsTrigger>
-          </TabsList>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="relative hidden sm:block">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Pesquisar pedido..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 w-[150px] bg-background pl-8 lg:w-[250px]"
-              />
-            </div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date"
-                  variant={"outline"}
-                  className={cn(
-                    "h-8 w-[220px] justify-start text-left font-normal",
-                    !dateRange && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateRange?.from ? (
-                    dateRange.to ? (
-                      <>
-                        {format(dateRange.from, "dd/MM/y")} -{" "}
-                        {format(dateRange.to, "dd/MM/y")}
-                      </>
-                    ) : (
-                      format(dateRange.from, "dd/MM/y")
-                    )
-                  ) : (
-                    <span>Filtrar por data</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={dateRange?.from}
-                  selected={dateRange}
-                  onSelect={setDateRange}
-                  numberOfMonths={1}
-                />
-              </PopoverContent>
-            </Popover>
-            <Button size="sm" variant="outline" className="h-8 gap-1" onClick={handleExport}>
-              <File className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Exportar
-              </span>
-            </Button>
-            <Dialog open={isAddDialogOpen} onOpenChange={setAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="h-8 gap-1">
-                  <PlusCircle className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Adicionar Pedido
-                  </span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
-                <form onSubmit={handleAddOrder}>
-                  <DialogHeader>
-                    <DialogTitle>Adicionar Novo Pedido</DialogTitle>
-                    <DialogDescription>
-                      Selecione um cliente e adicione produtos para criar um novo pedido.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <ScrollArea className="h-96 w-full">
-                    <div className="grid gap-6 p-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="customer">Cliente</Label>
-                        <Select value={newOrderCustomerId} onValueChange={setNewOrderCustomerId}>
-                          <SelectTrigger id="customer">
-                            <SelectValue placeholder="Selecione um cliente" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {customers.map(customer => (
-                              <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Separator />
-                      <div>
-                        <h4 className="font-medium mb-2 text-sm">Adicionar Produtos</h4>
-                        <div className="flex items-end gap-2">
-                          <div className="grid gap-2 flex-1">
-                            <Label htmlFor="product">Produto</Label>
-                            <Select value={productToAddId} onValueChange={setProductToAddId}>
-                              <SelectTrigger id="product">
-                                <SelectValue placeholder="Selecione um produto" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {products.map(product => (
-                                  <SelectItem key={product.id} value={product.id}>{product.name}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="grid gap-2 w-24">
-                            <Label htmlFor="quantity">Qtd.</Label>
-                            <Input 
-                              id="quantity" 
-                              type="number" 
-                              min="1" 
-                              value={productToAddQuantity}
-                              onChange={e => setProductToAddQuantity(parseInt(e.target.value) || 1)}
-                            />
-                          </div>
-                          <Button type="button" variant="outline" onClick={handleAddItem}>Adicionar</Button>
-                        </div>
-                      </div>
-                      {newOrderItems.length > 0 && (
-                        <div>
-                          <Separator className="my-4" />
-                          <h4 className="font-medium mb-2 text-sm">Itens do Pedido</h4>
-                          <div className="space-y-2">
-                            {newOrderItems.map(item => (
-                              <div key={item.id} className="flex justify-between items-center text-sm p-2 bg-muted rounded-md">
-                                <div>
-                                  <p className="font-medium">{item.name}</p>
-                                  <p className="text-muted-foreground">{item.quantity} x {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <p className="font-semibold">{(item.quantity * item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveItem(item.id)}>
-                                    <X className="h-4 w-4 text-destructive"/>
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          <Separator className="my-4" />
-                          <div className="flex justify-end font-bold text-lg">
-                              <p>Total: {newOrderItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </ScrollArea>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button type="button" variant="outline">Cancelar</Button>
-                    </DialogClose>
-                    <Button type="submit">Salvar Pedido</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+      <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <div className="relative hidden sm:block">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Pesquisar pedido..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-8 w-[150px] bg-background pl-8 lg:w-[250px]"
+            />
           </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="date"
+                variant={"outline"}
+                className={cn(
+                  "h-8 w-[220px] justify-start text-left font-normal",
+                  !dateRange && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {dateRange?.from ? (
+                  dateRange.to ? (
+                    <>
+                      {format(dateRange.from, "dd/MM/y")} -{" "}
+                      {format(dateRange.to, "dd/MM/y")}
+                    </>
+                  ) : (
+                    format(dateRange.from, "dd/MM/y")
+                  )
+                ) : (
+                  <span>Filtrar por data</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={dateRange?.from}
+                selected={dateRange}
+                onSelect={setDateRange}
+                numberOfMonths={1}
+              />
+            </PopoverContent>
+          </Popover>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8 gap-1">
+                <Filter className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Filtrar Status
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Filtrar por status</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup value={activeTab} onValueChange={setActiveTab}>
+                <DropdownMenuRadioItem value="todos">Todos</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="confirmado">Confirmado</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="em-andamento">Em Andamento</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="saiu-para-entrega">Saiu para Entrega</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="finalizado">Finalizado</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <TabsContent value={activeTab}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Pedidos</CardTitle>
-              <CardDescription>
-                Gerencie seus pedidos e visualize o desempenho das vendas.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Data do Pedido
-                    </TableHead>
-                    <TableHead className="text-right">Total</TableHead>
-                    <TableHead>
-                      <span className="sr-only">Ações</span>
-                    </TableHead>
+        <div className="ml-auto flex items-center gap-2">
+          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={handleExport}>
+            <File className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+              Exportar
+            </span>
+          </Button>
+          <Dialog open={isAddDialogOpen} onOpenChange={setAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="h-8 gap-1">
+                <PlusCircle className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Adicionar Pedido
+                </span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+              <form onSubmit={handleAddOrder}>
+                <DialogHeader>
+                  <DialogTitle>Adicionar Novo Pedido</DialogTitle>
+                  <DialogDescription>
+                    Selecione um cliente e adicione produtos para criar um novo pedido.
+                  </DialogDescription>
+                </DialogHeader>
+                <ScrollArea className="h-96 w-full">
+                  <div className="grid gap-6 p-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="customer">Cliente</Label>
+                      <Select value={newOrderCustomerId} onValueChange={setNewOrderCustomerId}>
+                        <SelectTrigger id="customer">
+                          <SelectValue placeholder="Selecione um cliente" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {customers.map(customer => (
+                            <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Separator />
+                    <div>
+                      <h4 className="font-medium mb-2 text-sm">Adicionar Produtos</h4>
+                      <div className="flex items-end gap-2">
+                        <div className="grid gap-2 flex-1">
+                          <Label htmlFor="product">Produto</Label>
+                          <Select value={productToAddId} onValueChange={setProductToAddId}>
+                            <SelectTrigger id="product">
+                              <SelectValue placeholder="Selecione um produto" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {products.map(product => (
+                                <SelectItem key={product.id} value={product.id}>{product.name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid gap-2 w-24">
+                          <Label htmlFor="quantity">Qtd.</Label>
+                          <Input 
+                            id="quantity" 
+                            type="number" 
+                            min="1" 
+                            value={productToAddQuantity}
+                            onChange={e => setProductToAddQuantity(parseInt(e.target.value) || 1)}
+                          />
+                        </div>
+                        <Button type="button" variant="outline" onClick={handleAddItem}>Adicionar</Button>
+                      </div>
+                    </div>
+                    {newOrderItems.length > 0 && (
+                      <div>
+                        <Separator className="my-4" />
+                        <h4 className="font-medium mb-2 text-sm">Itens do Pedido</h4>
+                        <div className="space-y-2">
+                          {newOrderItems.map(item => (
+                            <div key={item.id} className="flex justify-between items-center text-sm p-2 bg-muted rounded-md">
+                              <div>
+                                <p className="font-medium">{item.name}</p>
+                                <p className="text-muted-foreground">{item.quantity} x {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold">{(item.quantity * item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveItem(item.id)}>
+                                  <X className="h-4 w-4 text-destructive"/>
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <Separator className="my-4" />
+                        <div className="flex justify-end font-bold text-lg">
+                            <p>Total: {newOrderItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">Cancelar</Button>
+                  </DialogClose>
+                  <Button type="submit">Salvar Pedido</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Pedidos</CardTitle>
+          <CardDescription>
+            Gerencie seus pedidos e visualize o desempenho das vendas.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Cliente</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Data do Pedido
+                </TableHead>
+                <TableHead className="text-right">Total</TableHead>
+                <TableHead>
+                  <span className="sr-only">Ações</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredOrders.map(order => {
+                const Icon = statusConfig[order.status].icon;
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell>
+                      <div className="font-medium">{order.customerName}</div>
+                      <div className="hidden text-sm text-muted-foreground md:inline">
+                        {order.customerEmail}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={statusConfig[order.status].variant} className="capitalize">
+                        <Icon className={`mr-2 h-3.5 w-3.5 ${statusConfig[order.status].color}`} />
+                        {order.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {new Date(order.orderDate + 'T00:00:00').toLocaleDateString('pt-BR')}
+                    </TableCell>
+                    <TableCell className="text-right">{order.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                          <DropdownMenuItem onSelect={() => setViewingOrder(order)}>Ver Detalhes</DropdownMenuItem>
+                          <DropdownMenuItem onSelect={() => setEditingOrder(order)}>Editar</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive" onSelect={() => setDeletingOrder(order)}>
+                            Deletar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredOrders.map(order => {
-                    const Icon = statusConfig[order.status].icon;
-                    return (
-                      <TableRow key={order.id}>
-                        <TableCell>
-                          <div className="font-medium">{order.customerName}</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            {order.customerEmail}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={statusConfig[order.status].variant} className="capitalize">
-                            <Icon className={`mr-2 h-3.5 w-3.5 ${statusConfig[order.status].color}`} />
-                            {order.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {new Date(order.orderDate + 'T00:00:00').toLocaleDateString('pt-BR')}
-                        </TableCell>
-                        <TableCell className="text-right">{order.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                              <DropdownMenuItem onSelect={() => setViewingOrder(order)}>Ver Detalhes</DropdownMenuItem>
-                              <DropdownMenuItem onSelect={() => setEditingOrder(order)}>Editar</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-destructive" onSelect={() => setDeletingOrder(order)}>
-                                Deletar
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Mostrando <strong>{filteredOrders.length}</strong> de <strong>{orders.length}</strong> pedidos
-              </div>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
+                );
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter>
+          <div className="text-xs text-muted-foreground">
+            Mostrando <strong>{filteredOrders.length}</strong> de <strong>{orders.length}</strong> pedidos
+          </div>
+        </CardFooter>
+      </Card>
+      
       <Dialog open={!!editingOrder} onOpenChange={(isOpen) => !isOpen && setEditingOrder(null)}>
         <DialogContent className="sm:max-w-[600px]">
           <form onSubmit={handleEditOrder}>
