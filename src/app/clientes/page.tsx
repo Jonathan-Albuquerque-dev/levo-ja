@@ -153,6 +153,46 @@ export default function ClientesPage() {
   const [newCustomer, setNewCustomer] = useState(initialNewCustomerState);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const fetchAddressFromCEP = async (cep: string, formType: 'new' | 'edit') => {
+    const cleanedCep = cep.replace(/\D/g, '');
+    if (cleanedCep.length !== 8) return;
+
+    try {
+        const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+            toast({ variant: "destructive", title: "Erro!", description: "CEP não encontrado." });
+            return;
+        }
+
+        const addressData = {
+            street: data.logradouro || '',
+            city: data.localidade || '',
+            state: data.uf || '',
+        };
+
+        if (formType === 'new') {
+            setNewCustomer(prev => ({ ...prev, ...addressData }));
+        } else if (editingCustomer) {
+            setEditingCustomer(prev => {
+                if (!prev) return null;
+                return {
+                    ...prev,
+                    address: {
+                        ...prev.address,
+                        ...addressData,
+                    },
+                };
+            });
+        }
+        toast({ title: "Sucesso!", description: "Endereço preenchido automaticamente." });
+
+    } catch (error) {
+        toast({ variant: "destructive", title: "Erro de Rede", description: "Não foi possível buscar o endereço pelo CEP." });
+    }
+  };
+
   const handleAddCustomer = (e: React.FormEvent) => {
     e.preventDefault();
     if (newCustomer.name && newCustomer.email && newCustomer.phone && newCustomer.cpf && newCustomer.zipCode && newCustomer.street && newCustomer.number && newCustomer.city && newCustomer.state) {
@@ -205,18 +245,21 @@ export default function ClientesPage() {
 
   const handleEditChange = (field: keyof Customer, value: any) => {
     if (editingCustomer) {
-      setEditingCustomer({ ...editingCustomer, [field]: value });
+      setEditingCustomer(prev => prev ? { ...prev, [field]: value } : null);
     }
   };
 
   const handleEditAddressChange = (field: keyof Customer['address'], value: any) => {
     if (editingCustomer) {
-      setEditingCustomer({
-        ...editingCustomer,
-        address: {
-          ...editingCustomer.address,
-          [field]: value
-        }
+      setEditingCustomer(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          address: {
+            ...prev.address,
+            [field]: value
+          }
+        };
       });
     }
   };
@@ -260,46 +303,55 @@ export default function ClientesPage() {
                 </DialogHeader>
                 <ScrollArea className="h-96 w-full">
                     <div className="grid gap-4 p-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="name">Nome</Label>
-                        <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} placeholder="Ex: João da Silva" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" value={newCustomer.email} onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})} placeholder="Ex: joao@email.com" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="phone">Telefone</Label>
-                        <Input id="phone" value={newCustomer.phone} onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})} placeholder="Ex: 11987654321" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="cpf">CPF</Label>
-                        <Input id="cpf" value={newCustomer.cpf} onChange={(e) => setNewCustomer({...newCustomer, cpf: e.target.value})} placeholder="Ex: 123.456.789-00" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="zipCode">CEP</Label>
-                        <Input id="zipCode" value={newCustomer.zipCode} onChange={(e) => setNewCustomer({...newCustomer, zipCode: e.target.value})} placeholder="Ex: 01000-000" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="street">Rua</Label>
-                        <Input id="street" value={newCustomer.street} onChange={(e) => setNewCustomer({...newCustomer, street: e.target.value})} placeholder="Ex: Rua das Flores" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="number">Número</Label>
-                        <Input id="number" value={newCustomer.number} onChange={(e) => setNewCustomer({...newCustomer, number: e.target.value})} placeholder="Ex: 123" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="complement">Complemento</Label>
-                        <Input id="complement" value={newCustomer.complement} onChange={(e) => setNewCustomer({...newCustomer, complement: e.target.value})} placeholder="Ex: Apto 4B" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="city">Cidade</Label>
-                        <Input id="city" value={newCustomer.city} onChange={(e) => setNewCustomer({...newCustomer, city: e.target.value})} placeholder="Ex: São Paulo" />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="state">Estado</Label>
-                        <Input id="state" value={newCustomer.state} onChange={(e) => setNewCustomer({...newCustomer, state: e.target.value})} placeholder="Ex: SP" />
-                    </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="name">Nome</Label>
+                          <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} placeholder="Ex: João da Silva" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input id="email" type="email" value={newCustomer.email} onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})} placeholder="Ex: joao@email.com" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="phone">Telefone</Label>
+                          <Input id="phone" value={newCustomer.phone} onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})} placeholder="Ex: 11987654321" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="cpf">CPF</Label>
+                          <Input id="cpf" value={newCustomer.cpf} onChange={(e) => setNewCustomer({...newCustomer, cpf: e.target.value})} placeholder="Ex: 123.456.789-00" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="zipCode">CEP</Label>
+                          <Input 
+                            id="zipCode" 
+                            value={newCustomer.zipCode} 
+                            onChange={(e) => {
+                              const cep = e.target.value;
+                              setNewCustomer(prev => ({...prev, zipCode: cep}));
+                              fetchAddressFromCEP(cep, 'new');
+                            }} 
+                            placeholder="Ex: 01000-000" 
+                          />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="street">Rua</Label>
+                          <Input id="street" value={newCustomer.street} onChange={(e) => setNewCustomer({...newCustomer, street: e.target.value})} placeholder="Ex: Rua das Flores" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="number">Número</Label>
+                          <Input id="number" value={newCustomer.number} onChange={(e) => setNewCustomer({...newCustomer, number: e.target.value})} placeholder="Ex: 123" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="complement">Complemento</Label>
+                          <Input id="complement" value={newCustomer.complement} onChange={(e) => setNewCustomer({...newCustomer, complement: e.target.value})} placeholder="Ex: Apto 4B" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="city">Cidade</Label>
+                          <Input id="city" value={newCustomer.city} onChange={(e) => setNewCustomer({...newCustomer, city: e.target.value})} placeholder="Ex: São Paulo" />
+                      </div>
+                      <div className="grid gap-2">
+                          <Label htmlFor="state">Estado</Label>
+                          <Input id="state" value={newCustomer.state} onChange={(e) => setNewCustomer({...newCustomer, state: e.target.value})} placeholder="Ex: SP" />
+                      </div>
                     </div>
                 </ScrollArea>
                 <DialogFooter>
@@ -425,7 +477,15 @@ export default function ClientesPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="zipCode-edit">CEP</Label>
-                  <Input id="zipCode-edit" value={editingCustomer?.address?.zipCode || ''} onChange={(e) => handleEditAddressChange('zipCode', e.target.value)} />
+                  <Input 
+                    id="zipCode-edit" 
+                    value={editingCustomer?.address?.zipCode || ''} 
+                    onChange={(e) => {
+                      const cep = e.target.value;
+                      handleEditAddressChange('zipCode', cep);
+                      fetchAddressFromCEP(cep, 'edit');
+                    }}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="street-edit">Rua</Label>
