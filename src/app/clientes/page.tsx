@@ -239,8 +239,8 @@ export default function ClientesPage() {
                   Preencha as informações do novo cliente.
                 </DialogDescription>
               </DialogHeader>
-              <ScrollArea className="h-96 w-full pr-6">
-                <div className="grid gap-4 py-4">
+              <ScrollArea className="h-96 w-full">
+                <div className="grid gap-4 p-4">
                   <div className="grid gap-2">
                     <Label htmlFor="name">Nome</Label>
                     <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} placeholder="Ex: João da Silva" />
@@ -386,8 +386,8 @@ export default function ClientesPage() {
                 Atualize as informações do cliente.
               </DialogDescription>
             </DialogHeader>
-             <ScrollArea className="h-96 w-full pr-6">
-              <div className="grid gap-4 py-4">
+             <ScrollArea className="h-96 w-full">
+              <div className="grid gap-4 p-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name-edit">Nome</Label>
                   <Input id="name-edit" value={editingCustomer?.name || ''} onChange={(e) => handleEditChange('name', e.target.value)} />
