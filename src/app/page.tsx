@@ -62,7 +62,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">+45</div>
             <p className="text-xs text-muted-foreground">
-              +5 desde a última hora
+              +8% desde ontem
             </p>
           </CardContent>
         </Card>
@@ -76,7 +76,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">+1.289</div>
             <p className="text-xs text-muted-foreground">
-              +15% do último mês
+              +19% desde ontem
             </p>
           </CardContent>
         </Card>
