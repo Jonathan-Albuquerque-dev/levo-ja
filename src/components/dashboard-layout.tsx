@@ -1,7 +1,9 @@
+
 'use client'
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import {
   Bell,
   CircleUser,
@@ -43,6 +45,22 @@ import { cn } from "@/lib/utils"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (isAuthenticated !== 'true') {
+      router.push('/login');
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    router.push('/login');
+  };
 
   const navLinks = [
     { href: "/", label: "Painel", icon: Home },
@@ -51,6 +69,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { href: "/clientes", label: "Clientes", icon: Users },
     { href: "/analises", label: "Análises", icon: LineChart },
   ]
+
+  if (isCheckingAuth) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <p>Carregando...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -186,7 +212,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <DropdownMenuItem>Configurações</DropdownMenuItem>
               <DropdownMenuItem>Suporte</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Sair</DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleLogout}>Sair</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
