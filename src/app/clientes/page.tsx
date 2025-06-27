@@ -241,45 +241,45 @@ export default function ClientesPage() {
               </DialogHeader>
               <ScrollArea className="h-96 w-full pr-6">
                 <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">Nome</Label>
-                    <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} className="col-span-3" placeholder="Ex: João da Silva" />
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">Nome</Label>
+                    <Input id="name" value={newCustomer.name} onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})} placeholder="Ex: João da Silva" />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="email" className="text-right">Email</Label>
-                    <Input id="email" type="email" value={newCustomer.email} onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})} className="col-span-3" placeholder="Ex: joao@email.com" />
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" value={newCustomer.email} onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})} placeholder="Ex: joao@email.com" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="phone" className="text-right">Telefone</Label>
-                    <Input id="phone" value={newCustomer.phone} onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})} className="col-span-3" placeholder="Ex: 11987654321" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="phone">Telefone</Label>
+                    <Input id="phone" value={newCustomer.phone} onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})} placeholder="Ex: 11987654321" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="cpf" className="text-right">CPF</Label>
-                    <Input id="cpf" value={newCustomer.cpf} onChange={(e) => setNewCustomer({...newCustomer, cpf: e.target.value})} className="col-span-3" placeholder="Ex: 123.456.789-00" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="cpf">CPF</Label>
+                    <Input id="cpf" value={newCustomer.cpf} onChange={(e) => setNewCustomer({...newCustomer, cpf: e.target.value})} placeholder="Ex: 123.456.789-00" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="zipCode" className="text-right">CEP</Label>
-                    <Input id="zipCode" value={newCustomer.zipCode} onChange={(e) => setNewCustomer({...newCustomer, zipCode: e.target.value})} className="col-span-3" placeholder="Ex: 01000-000" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="zipCode">CEP</Label>
+                    <Input id="zipCode" value={newCustomer.zipCode} onChange={(e) => setNewCustomer({...newCustomer, zipCode: e.target.value})} placeholder="Ex: 01000-000" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="street" className="text-right">Rua</Label>
-                    <Input id="street" value={newCustomer.street} onChange={(e) => setNewCustomer({...newCustomer, street: e.target.value})} className="col-span-3" placeholder="Ex: Rua das Flores" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="street">Rua</Label>
+                    <Input id="street" value={newCustomer.street} onChange={(e) => setNewCustomer({...newCustomer, street: e.target.value})} placeholder="Ex: Rua das Flores" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="number" className="text-right">Número</Label>
-                    <Input id="number" value={newCustomer.number} onChange={(e) => setNewCustomer({...newCustomer, number: e.target.value})} className="col-span-3" placeholder="Ex: 123" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="number">Número</Label>
+                    <Input id="number" value={newCustomer.number} onChange={(e) => setNewCustomer({...newCustomer, number: e.target.value})} placeholder="Ex: 123" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="complement" className="text-right">Complemento</Label>
-                    <Input id="complement" value={newCustomer.complement} onChange={(e) => setNewCustomer({...newCustomer, complement: e.target.value})} className="col-span-3" placeholder="Ex: Apto 4B" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="complement">Complemento</Label>
+                    <Input id="complement" value={newCustomer.complement} onChange={(e) => setNewCustomer({...newCustomer, complement: e.target.value})} placeholder="Ex: Apto 4B" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="city" className="text-right">Cidade</Label>
-                    <Input id="city" value={newCustomer.city} onChange={(e) => setNewCustomer({...newCustomer, city: e.target.value})} className="col-span-3" placeholder="Ex: São Paulo" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="city">Cidade</Label>
+                    <Input id="city" value={newCustomer.city} onChange={(e) => setNewCustomer({...newCustomer, city: e.target.value})} placeholder="Ex: São Paulo" />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="state" className="text-right">Estado</Label>
-                    <Input id="state" value={newCustomer.state} onChange={(e) => setNewCustomer({...newCustomer, state: e.target.value})} className="col-span-3" placeholder="Ex: SP" />
+                   <div className="grid gap-2">
+                    <Label htmlFor="state">Estado</Label>
+                    <Input id="state" value={newCustomer.state} onChange={(e) => setNewCustomer({...newCustomer, state: e.target.value})} placeholder="Ex: SP" />
                   </div>
                 </div>
               </ScrollArea>
@@ -388,45 +388,45 @@ export default function ClientesPage() {
             </DialogHeader>
              <ScrollArea className="h-96 w-full pr-6">
               <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name-edit" className="text-right">Nome</Label>
-                  <Input id="name-edit" value={editingCustomer?.name || ''} onChange={(e) => handleEditChange('name', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="name-edit">Nome</Label>
+                  <Input id="name-edit" value={editingCustomer?.name || ''} onChange={(e) => handleEditChange('name', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email-edit" className="text-right">Email</Label>
-                  <Input id="email-edit" type="email" value={editingCustomer?.email || ''} onChange={(e) => handleEditChange('email', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="email-edit">Email</Label>
+                  <Input id="email-edit" type="email" value={editingCustomer?.email || ''} onChange={(e) => handleEditChange('email', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="phone-edit" className="text-right">Telefone</Label>
-                  <Input id="phone-edit" value={editingCustomer?.phone || ''} onChange={(e) => handleEditChange('phone', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="phone-edit">Telefone</Label>
+                  <Input id="phone-edit" value={editingCustomer?.phone || ''} onChange={(e) => handleEditChange('phone', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="cpf-edit" className="text-right">CPF</Label>
-                  <Input id="cpf-edit" value={editingCustomer?.cpf || ''} onChange={(e) => handleEditChange('cpf', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="cpf-edit">CPF</Label>
+                  <Input id="cpf-edit" value={editingCustomer?.cpf || ''} onChange={(e) => handleEditChange('cpf', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="zipCode-edit" className="text-right">CEP</Label>
-                  <Input id="zipCode-edit" value={editingCustomer?.address?.zipCode || ''} onChange={(e) => handleEditAddressChange('zipCode', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="zipCode-edit">CEP</Label>
+                  <Input id="zipCode-edit" value={editingCustomer?.address?.zipCode || ''} onChange={(e) => handleEditAddressChange('zipCode', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="street-edit" className="text-right">Rua</Label>
-                  <Input id="street-edit" value={editingCustomer?.address?.street || ''} onChange={(e) => handleEditAddressChange('street', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="street-edit">Rua</Label>
+                  <Input id="street-edit" value={editingCustomer?.address?.street || ''} onChange={(e) => handleEditAddressChange('street', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="number-edit" className="text-right">Número</Label>
-                  <Input id="number-edit" value={editingCustomer?.address?.number || ''} onChange={(e) => handleEditAddressChange('number', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="number-edit">Número</Label>
+                  <Input id="number-edit" value={editingCustomer?.address?.number || ''} onChange={(e) => handleEditAddressChange('number', e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="complement-edit" className="text-right">Complemento</Label>
-                  <Input id="complement-edit" value={editingCustomer?.address?.complement || ''} onChange={(e) => handleEditAddressChange('complement', e.target.value)} className="col-span-3" />
+                <div className="grid gap-2">
+                  <Label htmlFor="complement-edit">Complemento</Label>
+                  <Input id="complement-edit" value={editingCustomer?.address?.complement || ''} onChange={(e) => handleEditAddressChange('complement', e.target.value)} />
                 </div>
-                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="city-edit" className="text-right">Cidade</Label>
-                  <Input id="city-edit" value={editingCustomer?.address?.city || ''} onChange={(e) => handleEditAddressChange('city', e.target.value)} className="col-span-3" />
+                 <div className="grid gap-2">
+                  <Label htmlFor="city-edit">Cidade</Label>
+                  <Input id="city-edit" value={editingCustomer?.address?.city || ''} onChange={(e) => handleEditAddressChange('city', e.target.value)} />
                 </div>
-                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="state-edit" className="text-right">Estado</Label>
-                  <Input id="state-edit" value={editingCustomer?.address?.state || ''} onChange={(e) => handleEditAddressChange('state', e.target.value)} className="col-span-3" />
+                 <div className="grid gap-2">
+                  <Label htmlFor="state-edit">Estado</Label>
+                  <Input id="state-edit" value={editingCustomer?.address?.state || ''} onChange={(e) => handleEditAddressChange('state', e.target.value)} />
                 </div>
               </div>
             </ScrollArea>
