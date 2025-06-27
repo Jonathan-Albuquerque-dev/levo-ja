@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Package,
   Hourglass,
+  X,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -77,78 +78,17 @@ import {
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
+import { 
+  initialOrders, 
+  type Order, 
+  type OrderStatus, 
+  type OrderItem,
+  initialCustomers,
+  type Customer,
+  initialProducts,
+  type Product,
+} from "@/lib/data"
 
-type OrderStatus = 'Confirmado' | 'Em Andamento' | 'Saiu para Entrega' | 'Finalizado'
-
-type OrderItem = {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
-}
-
-type Order = {
-  id: string;
-  customerName: string;
-  customerEmail: string;
-  status: OrderStatus;
-  orderDate: string;
-  total: number;
-  items: OrderItem[];
-  shippingAddress: string;
-};
-
-const initialOrders: Order[] = [
-  {
-    id: "ORD001",
-    customerName: "Liam Johnson",
-    customerEmail: "liam@example.com",
-    status: "Confirmado",
-    orderDate: "2023-06-23",
-    total: 250.00,
-    items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 2, price: 49.99 }, { id: "2", name: "Moletom Eco-Conforto", quantity: 1, price: 89.99 }],
-    shippingAddress: "Rua das Flores, 123, São Paulo, SP"
-  },
-  {
-    id: "ORD002",
-    customerName: "Olivia Smith",
-    customerEmail: "olivia@example.com",
-    status: "Em Andamento",
-    orderDate: "2023-06-24",
-    total: 150.00,
-    items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 3, price: 49.99 }],
-    shippingAddress: "Avenida Copacabana, 456, Rio de Janeiro, RJ"
-  },
-  {
-    id: "ORD003",
-    customerName: "Noah Williams",
-    customerEmail: "noah@example.com",
-    status: "Saiu para Entrega",
-    orderDate: "2023-06-25",
-    total: 350.00,
-    items: [{ id: "3", name: "Tênis de Corrida Zyon-Flex", quantity: 1, price: 159.90 }, { id: "2", name: "Moletom Eco-Conforto", quantity: 2, price: 89.99 }],
-    shippingAddress: "Rua da Praia, 789, Salvador, BA"
-  },
-  {
-    id: "ORD004",
-    customerName: "Emma Brown",
-    customerEmail: "emma@example.com",
-    status: "Finalizado",
-    orderDate: "2023-06-26",
-    total: 450.00,
-    items: [{ id: "1", name: "Camiseta Hyper-Brilho Laser", quantity: 9, price: 49.99 }],
-    shippingAddress: "Avenida Paulista, 1000, São Paulo, SP"
-  },
-];
-
-const initialNewOrderState = {
-  customerName: '',
-  customerEmail: '',
-  total: '',
-  shippingAddress: '',
-  status: 'Confirmado' as OrderStatus,
-};
 
 const statusConfig: Record<OrderStatus, { variant: 'outline' | 'secondary' | 'default', icon: React.ElementType, color: string }> = {
   'Confirmado': { variant: 'outline', icon: CheckCircle, color: 'text-blue-500' },
@@ -160,13 +100,21 @@ const statusConfig: Record<OrderStatus, { variant: 'outline' | 'secondary' | 'de
 export default function PedidosPage() {
   const { toast } = useToast()
   const [orders, setOrders] = useState<Order[]>(initialOrders)
+  const [customers] = useState<Customer[]>(initialCustomers);
+  const [products] = useState<Product[]>(initialProducts.filter(p => p.status === "Ativo"));
+  
   const [activeTab, setActiveTab] = useState("todos")
   const [isAddDialogOpen, setAddDialogOpen] = useState(false)
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null)
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null)
-  const [newOrder, setNewOrder] = useState(initialNewOrderState)
   
+  // State for the new order form
+  const [newOrderCustomerId, setNewOrderCustomerId] = useState<string | undefined>(undefined);
+  const [newOrderItems, setNewOrderItems] = useState<OrderItem[]>([]);
+  const [productToAddId, setProductToAddId] = useState<string | undefined>(undefined);
+  const [productToAddQuantity, setProductToAddQuantity] = useState(1);
+
   const filteredOrders = orders.filter(order => {
     if (activeTab === "todos") return true
     const normalizedTab = activeTab.replace(/-/g, ' ');
@@ -224,27 +172,77 @@ export default function PedidosPage() {
     });
   }
 
+  const handleAddItem = () => {
+    if (!productToAddId) {
+      toast({ variant: "destructive", title: "Erro!", description: "Selecione um produto para adicionar." });
+      return;
+    }
+    const product = products.find(p => p.id === productToAddId);
+    if (!product) return;
+
+    const existingItemIndex = newOrderItems.findIndex(item => item.id === product.id);
+
+    if (existingItemIndex > -1) {
+        const updatedItems = [...newOrderItems];
+        updatedItems[existingItemIndex].quantity += productToAddQuantity;
+        setNewOrderItems(updatedItems);
+    } else {
+        const newItem: OrderItem = {
+            id: product.id,
+            name: product.name,
+            quantity: productToAddQuantity,
+            price: product.price,
+        };
+        setNewOrderItems(prev => [...prev, newItem]);
+    }
+    
+    setProductToAddId(undefined);
+    setProductToAddQuantity(1);
+  };
+
+  const handleRemoveItem = (itemId: string) => {
+    setNewOrderItems(prev => prev.filter(item => item.id !== itemId));
+  };
+
+
   const handleAddOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newOrder.customerName && newOrder.customerEmail && newOrder.total && newOrder.shippingAddress) {
-      const orderToAdd: Order = {
-        id: `ORD${String(orders.length + 1).padStart(3, '0')}`,
-        customerName: newOrder.customerName,
-        customerEmail: newOrder.customerEmail,
-        status: newOrder.status,
-        orderDate: new Date().toISOString().split('T')[0],
-        total: parseFloat(newOrder.total),
-        shippingAddress: newOrder.shippingAddress,
-        items: [], // Simplified for this example
-      };
-      setOrders(prev => [orderToAdd, ...prev]);
-      setAddDialogOpen(false);
-      setNewOrder(initialNewOrderState);
-      toast({ title: "Sucesso!", description: "Pedido adicionado." });
-    } else {
-      toast({ variant: "destructive", title: "Erro!", description: "Por favor, preencha todos os campos." });
+    const selectedCustomer = customers.find(c => c.id === newOrderCustomerId);
+
+    if (!selectedCustomer) {
+      toast({ variant: "destructive", title: "Erro!", description: "Por favor, selecione um cliente." });
+      return;
     }
+    if (newOrderItems.length === 0) {
+      toast({ variant: "destructive", title: "Erro!", description: "Por favor, adicione pelo menos um produto ao pedido." });
+      return;
+    }
+
+    const total = newOrderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const address = selectedCustomer.address;
+    const shippingAddress = `${address.street}, ${address.number}${address.complement ? `, ${address.complement}` : ''} - ${address.city}, ${address.state}`;
+    
+    const orderToAdd: Order = {
+      id: `ORD${String(orders.length + 1).padStart(3, '0')}`,
+      customerName: selectedCustomer.name,
+      customerEmail: selectedCustomer.email,
+      status: 'Confirmado',
+      orderDate: new Date().toISOString().split('T')[0],
+      total: total,
+      shippingAddress: shippingAddress,
+      items: newOrderItems,
+    };
+
+    setOrders(prev => [orderToAdd, ...prev]);
+    setAddDialogOpen(false);
+    
+    setNewOrderCustomerId(undefined);
+    setNewOrderItems([]);
+    setProductToAddId(undefined);
+    setProductToAddQuantity(1);
+    toast({ title: "Sucesso!", description: "Pedido adicionado." });
   };
+
 
   const handleEditOrder = (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,49 +299,87 @@ export default function PedidosPage() {
                   <DialogHeader>
                     <DialogTitle>Adicionar Novo Pedido</DialogTitle>
                     <DialogDescription>
-                      Preencha os detalhes do novo pedido.
+                      Selecione um cliente e adicione produtos para criar um novo pedido.
                     </DialogDescription>
                   </DialogHeader>
                   <ScrollArea className="h-96 w-full">
-                    <div className="grid gap-4 p-4">
+                    <div className="grid gap-6 p-4">
                       <div className="grid gap-2">
-                        <Label htmlFor="customerName">Nome do Cliente</Label>
-                        <Input id="customerName" value={newOrder.customerName} onChange={e => setNewOrder({...newOrder, customerName: e.target.value})} />
+                        <Label htmlFor="customer">Cliente</Label>
+                        <Select value={newOrderCustomerId} onValueChange={setNewOrderCustomerId}>
+                          <SelectTrigger id="customer">
+                            <SelectValue placeholder="Selecione um cliente" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {customers.map(customer => (
+                              <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="customerEmail">Email do Cliente</Label>
-                        <Input id="customerEmail" type="email" value={newOrder.customerEmail} onChange={e => setNewOrder({...newOrder, customerEmail: e.target.value})} />
-                      </div>
-                       <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="total">Total do Pedido</Label>
-                          <Input id="total" type="number" step="0.01" value={newOrder.total} onChange={e => setNewOrder({...newOrder, total: e.target.value})} />
-                        </div>
-                         <div className="grid gap-2">
-                          <Label htmlFor="status">Status</Label>
-                           <Select value={newOrder.status} onValueChange={(value: OrderStatus) => setNewOrder({...newOrder, status: value})}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione o status" />
+                      <Separator />
+                      <div>
+                        <h4 className="font-medium mb-2 text-sm">Adicionar Produtos</h4>
+                        <div className="flex items-end gap-2">
+                          <div className="grid gap-2 flex-1">
+                            <Label htmlFor="product">Produto</Label>
+                            <Select value={productToAddId} onValueChange={setProductToAddId}>
+                              <SelectTrigger id="product">
+                                <SelectValue placeholder="Selecione um produto" />
                               </SelectTrigger>
                               <SelectContent>
-                                {Object.keys(statusConfig).map(status => (
-                                  <SelectItem key={status} value={status}>{status}</SelectItem>
+                                {products.map(product => (
+                                  <SelectItem key={product.id} value={product.id}>{product.name}</SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
-                         </div>
-                       </div>
-                       <div className="grid gap-2">
-                          <Label htmlFor="shippingAddress">Endereço de Entrega</Label>
-                          <Textarea id="shippingAddress" value={newOrder.shippingAddress} onChange={e => setNewOrder({...newOrder, shippingAddress: e.target.value})} />
-                       </div>
+                          </div>
+                          <div className="grid gap-2 w-24">
+                            <Label htmlFor="quantity">Qtd.</Label>
+                            <Input 
+                              id="quantity" 
+                              type="number" 
+                              min="1" 
+                              value={productToAddQuantity}
+                              onChange={e => setProductToAddQuantity(parseInt(e.target.value) || 1)}
+                            />
+                          </div>
+                          <Button type="button" variant="outline" onClick={handleAddItem}>Adicionar</Button>
+                        </div>
+                      </div>
+                      {newOrderItems.length > 0 && (
+                        <div>
+                          <Separator className="my-4" />
+                          <h4 className="font-medium mb-2 text-sm">Itens do Pedido</h4>
+                          <div className="space-y-2">
+                            {newOrderItems.map(item => (
+                              <div key={item.id} className="flex justify-between items-center text-sm p-2 bg-muted rounded-md">
+                                <div>
+                                  <p className="font-medium">{item.name}</p>
+                                  <p className="text-muted-foreground">{item.quantity} x {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <p className="font-semibold">{(item.quantity * item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveItem(item.id)}>
+                                    <X className="h-4 w-4 text-destructive"/>
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <Separator className="my-4" />
+                          <div className="flex justify-end font-bold text-lg">
+                              <p>Total: {newOrderItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </ScrollArea>
                   <DialogFooter>
                     <DialogClose asChild>
                       <Button type="button" variant="outline">Cancelar</Button>
                     </DialogClose>
-                    <Button type="submit">Adicionar Pedido</Button>
+                    <Button type="submit">Salvar Pedido</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

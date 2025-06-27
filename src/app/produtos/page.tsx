@@ -74,67 +74,8 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { type Product, initialProducts } from "@/lib/data"
 
-
-type Product = {
-  id: string;
-  name: string;
-  status: "Ativo" | "Arquivado";
-  price: number;
-  stock: number;
-  createdAt: string;
-  image: string;
-  imageHint: string;
-  category: string;
-  brand: string;
-  unitOfMeasure: string;
-  description: string;
-};
-
-const initialProducts: Product[] = [
-  {
-    id: "1",
-    name: "Camiseta Hyper-Brilho Laser",
-    status: "Ativo",
-    price: 49.99,
-    stock: 25,
-    createdAt: "2023-07-12",
-    image: "https://placehold.co/64x64.png",
-    imageHint: "tshirt product",
-    category: "Vestuário",
-    brand: "Hyper",
-    unitOfMeasure: "Unidade",
-    description: "Camiseta de algodão com estampa a laser que brilha no escuro."
-  },
-  {
-    id: "2",
-    name: "Moletom com Capuz Eco-Conforto",
-    status: "Ativo",
-    price: 89.99,
-    stock: 102,
-    createdAt: "2023-10-18",
-    image: "https://placehold.co/64x64.png",
-    imageHint: "hoodie product",
-    category: "Vestuário",
-    brand: "EcoWear",
-    unitOfMeasure: "Unidade",
-    description: "Moletom sustentável feito com materiais reciclados."
-  },
-   {
-    id: "3",
-    name: "Tênis de Corrida Zyon-Flex",
-    status: "Arquivado",
-    price: 159.90,
-    stock: 0,
-    createdAt: "2023-05-30",
-    image: "https://placehold.co/64x64.png",
-    imageHint: "sneaker product",
-    category: "Calçados",
-    brand: "Zyon",
-    unitOfMeasure: "Par",
-    description: "Tênis leve e flexível para corredores de todos os níveis."
-  },
-];
 
 const initialNewProductState = {
   name: '',

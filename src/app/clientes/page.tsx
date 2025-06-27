@@ -63,72 +63,8 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { type Customer, initialCustomers } from "@/lib/data"
 
-
-type Customer = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  cpf: string;
-  address: {
-    street: string;
-    number: string;
-    complement?: string;
-    zipCode: string;
-    city: string;
-    state: string;
-  };
-  type: "Ativo" | "Novo" | "Inativo";
-  signupDate: string;
-  totalSpent: number;
-  avatar: string;
-  avatarFallback: string;
-  avatarHint: string;
-};
-
-const initialCustomers: Customer[] = [
-  {
-    id: "1",
-    name: "Ana Silva",
-    email: "ana.silva@email.com",
-    phone: "11987654321",
-    cpf: "123.456.789-00",
-    address: {
-      street: "Rua das Flores",
-      number: "123",
-      zipCode: "01000-000",
-      city: "São Paulo",
-      state: "SP",
-    },
-    type: "Ativo",
-    signupDate: "2023-01-15",
-    totalSpent: 1250.50,
-    avatar: "https://placehold.co/36x36.png",
-    avatarFallback: "AS",
-    avatarHint: "woman smiling",
-  },
-  {
-    id: "2",
-    name: "Bruno Costa",
-    email: "bruno.costa@email.com",
-    phone: "21912345678",
-    cpf: "987.654.321-00",
-    address: {
-      street: "Avenida Copacabana",
-      number: "456",
-      zipCode: "22020-001",
-      city: "Rio de Janeiro",
-      state: "RJ",
-    },
-    type: "Novo",
-    signupDate: "2024-03-20",
-    totalSpent: 320.00,
-    avatar: "https://placehold.co/36x36.png",
-    avatarFallback: "BC",
-    avatarHint: "man portrait",
-  },
-];
 
 const initialNewCustomerState = {
   name: '',
