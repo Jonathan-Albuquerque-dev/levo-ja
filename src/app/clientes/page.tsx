@@ -6,6 +6,7 @@ import { DashboardLayout } from "@/components/dashboard-layout"
 import {
   MoreHorizontal,
   PlusCircle,
+  Search,
 } from "lucide-react"
 import {
   Avatar,
@@ -150,6 +151,7 @@ export default function ClientesPage() {
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
   const [viewingCustomer, setViewingCustomer] = useState<Customer | null>(null);
   const [newCustomer, setNewCustomer] = useState(initialNewCustomerState);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddCustomer = (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,6 +221,10 @@ export default function ClientesPage() {
     }
   };
 
+  const filteredCustomers = customers.filter(customer =>
+    customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    customer.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <DashboardLayout>
@@ -295,6 +301,17 @@ export default function ClientesPage() {
           </DialogContent>
         </Dialog>
       </div>
+      <div className="mb-4">
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Pesquisar clientes por nome ou email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full max-w-sm pl-8"
+          />
+        </div>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Lista de Clientes</CardTitle>
@@ -323,7 +340,7 @@ export default function ClientesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {customers.map(customer => (
+              {filteredCustomers.map(customer => (
                 <TableRow key={customer.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -374,7 +391,7 @@ export default function ClientesPage() {
         </CardContent>
         <CardFooter>
             <div className="text-xs text-muted-foreground">
-                Mostrando <strong>1-{customers.length}</strong> de <strong>{customers.length}</strong> clientes
+                Mostrando <strong>{filteredCustomers.length}</strong> de <strong>{customers.length}</strong> clientes
             </div>
         </CardFooter>
       </Card>
