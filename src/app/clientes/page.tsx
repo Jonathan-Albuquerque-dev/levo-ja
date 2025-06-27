@@ -61,6 +61,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 
 
 type Customer = {
@@ -147,6 +148,7 @@ export default function ClientesPage() {
   const [isAddDialogOpen, setAddDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
+  const [viewingCustomer, setViewingCustomer] = useState<Customer | null>(null);
   const [newCustomer, setNewCustomer] = useState(initialNewCustomerState);
 
   const handleAddCustomer = (e: React.FormEvent) => {
@@ -352,7 +354,7 @@ export default function ClientesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem onSelect={() => toast({ description: "Funcionalidade de detalhes em breve." })}>
+                        <DropdownMenuItem onSelect={() => setViewingCustomer(customer)}>
                           Ver Detalhes
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setEditingCustomer(customer)}>
@@ -452,6 +454,71 @@ export default function ClientesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={!!viewingCustomer} onOpenChange={(isOpen) => !isOpen && setViewingCustomer(null)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Detalhes do Cliente</DialogTitle>
+            <DialogDescription>
+              Informações completas do cliente selecionado.
+            </DialogDescription>
+          </DialogHeader>
+          {viewingCustomer && (
+            <ScrollArea className="h-96 w-full">
+              <div className="grid gap-4 p-4">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                      <AvatarImage src={viewingCustomer.avatar} alt="Avatar" data-ai-hint={viewingCustomer.avatarHint} />
+                      <AvatarFallback>{viewingCustomer.avatarFallback}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="text-lg font-semibold">{viewingCustomer.name}</h3>
+                    <p className="text-sm text-muted-foreground">{viewingCustomer.email}</p>
+                  </div>
+                </div>
+                <Separator />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Telefone</Label>
+                    <p className="font-medium text-sm">{viewingCustomer.phone}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">CPF</Label>
+                    <p className="font-medium text-sm">{viewingCustomer.cpf}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-xs text-muted-foreground">Endereço</Label>
+                    <p className="font-medium text-sm">
+                      {`${viewingCustomer.address.street}, ${viewingCustomer.address.number}`}
+                      {viewingCustomer.address.complement && `, ${viewingCustomer.address.complement}`}
+                    </p>
+                     <p className="font-medium text-sm">
+                      {`${viewingCustomer.address.city}, ${viewingCustomer.address.state} - CEP: ${viewingCustomer.address.zipCode}`}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Tipo de Cliente</Label>
+                    <p className="font-medium text-sm">{viewingCustomer.type}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Data de Cadastro</Label>
+                    <p className="font-medium text-sm">{viewingCustomer.signupDate}</p>
+                  </div>
+                   <div>
+                    <Label className="text-xs text-muted-foreground">Total Gasto</Label>
+                    <p className="font-medium text-sm">{viewingCustomer.totalSpent.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                  </div>
+                </div>
+              </div>
+            </ScrollArea>
+          )}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Fechar</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   )
 }
