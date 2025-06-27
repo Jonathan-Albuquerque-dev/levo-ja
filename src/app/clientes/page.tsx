@@ -243,11 +243,11 @@ export default function ClientesPage() {
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger asChild>
-                <Button size="sm" className="h-8 gap-1">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Adicionar Cliente
-                </span>
+                <Button>
+                  <PlusCircle className="h-4 w-4" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                      Adicionar Cliente
+                  </span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
