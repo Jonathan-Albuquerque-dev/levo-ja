@@ -2,7 +2,8 @@
 'use client'
 
 import { useState, useRef } from "react"
-import { useReactToPrint } from "react-to-print"
+import jsPDF from "jspdf"
+import html2canvas from "html2canvas"
 import {
   File,
   MoreHorizontal,
@@ -121,11 +122,39 @@ export default function PedidosPage() {
 
   const printComponentRef = useRef<HTMLDivElement>(null);
 
-  const handlePrint = useReactToPrint({
-    content: () => printComponentRef.current,
-    documentTitle: `Pedido-${viewingOrder?.id || 'novo'}`,
-    onAfterPrint: () => toast({ title: "Impressão enviada com sucesso!" }),
-  });
+  const handleGeneratePdf = async () => {
+    const input = printComponentRef.current;
+    if (!input || !viewingOrder) {
+      toast({ variant: "destructive", title: "Erro!", description: "Não foi possível gerar o PDF." });
+      return;
+    }
+
+    toast({ title: "Gerando PDF...", description: "Por favor, aguarde um momento." });
+
+    try {
+      const canvas = await html2canvas(input, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`Pedido-${viewingOrder.id}.pdf`);
+
+      toast({ title: "Sucesso!", description: "PDF do pedido gerado e baixado." });
+
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      toast({ variant: "destructive", title: "Erro!", description: "Ocorreu um problema ao gerar o PDF." });
+    }
+  };
 
 
   const filteredOrders = orders.filter(order => {
@@ -603,9 +632,9 @@ export default function PedidosPage() {
             );
           })()}
           <DialogFooter className="sm:justify-start gap-2">
-            <Button onClick={handlePrint}>
+            <Button onClick={handleGeneratePdf}>
               <Printer className="mr-2 h-4 w-4" />
-              Imprimir Pedido
+              Gerar PDF do Pedido
             </Button>
             <DialogClose asChild>
               <button
